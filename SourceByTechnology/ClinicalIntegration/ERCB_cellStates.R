@@ -1,0 +1,32 @@
+ercbTub = read.table("ERCB_ForIntegrationPaper_NormalizedExpression.txt", sep = '\t', row.names = 1, header = TRUE)
+degenerative = read.table("Degenerative.txt")
+aTAL = read.table("aTAL.txt")
+aPT = read.table("aPT.txt")
+adaptiveStromal = read.table("Stromal.txt")
+degenerative = read.table("Degenerative.txt")
+aPTaTALcommon = read.table("aPT_aTAL_common.txt")
+ercbTubstromal = ercbTub[row.names(ercbTub) %in% adaptiveStromal$V1,]
+Dat<-(ercbTubstromal-rowMeans(ercbTubstromal))/rowSds(as.matrix(ercbTubstromal))
+Score<-colMeans(Dat, na.rm = TRUE)
+Score<-as.data.frame(Score)
+write.table(Score, file = "ERCBStromalScore.txt", sep = '\t', quote = FALSE)
+ercbTubaPT = ercbTub[row.names(ercbTub) %in% aPT$V1,]
+Dat<-(ercbTubaPT-rowMeans(ercbTubaPT))/rowSds(as.matrix(ercbTubaPT))
+Score<-colMeans(Dat, na.rm = TRUE)
+Score<-as.data.frame(Score)
+write.table(Score, file = "ERCBaPTScore.txt", sep = '\t', quote = FALSE)
+ercbTubaTAL = ercbTub[row.names(ercbTub) %in% aTAL$V1,]
+Dat<-(ercbTubaTAL-rowMeans(ercbTubaTAL))/rowSds(as.matrix(ercbTubaTAL))
+Score<-colMeans(Dat, na.rm = TRUE)
+Score<-as.data.frame(Score)
+write.table(Score, file = "ERCBaTALScore.txt", sep = '\t', quote = FALSE)
+ercbTubaPTaTAL = ercbTub[row.names(ercbTub) %in% aPTaTALcommon$V1,]
+Dat<-(ercbTubaPTaTAL-rowMeans(ercbTubaPTaTAL))/rowSds(as.matrix(ercbTubaPTaTAL))
+Score<-colMeans(Dat, na.rm = TRUE)
+Score<-as.data.frame(Score)
+write.table(Score, file = "ERCBaPTaTALCommonScore.txt", sep = '\t', quote = FALSE)
+ercbTubdeg = ercbTub[row.names(ercbTub) %in% degenerative$V1,]
+Dat<-(ercbTubdeg-rowMeans(ercbTubdeg))/rowSds(as.matrix(ercbTubdeg))
+Score<-colMeans(Dat, na.rm = TRUE)
+Score<-as.data.frame(Score)
+write.table(Score, file = "ERCBDegenerativeScore.txt", sep = '\t', quote = FALSE)
