@@ -1,3 +1,6 @@
+# related functions for fig 5, supplemental fig 12 and supplemental fig 14
+# author: Qiwen Hu - 2021
+
 
 #' calculate rpkm
 rpkm <- function(count, gene_length=NULL){
@@ -1319,4 +1322,130 @@ granges2peak <- function(gr, delim = c(":", "-")) {
   paste0(seqnames(gr), delim[[1]],
          start(gr), delim[[2]],
          end(gr))
+}
+
+### sample-level clustering functions
+fitLogistic <- function(exp, cond, comparison=c("AKI", "CKD")){
+  # exp: expression value
+  # cond: condition
+  cond.index <- which(cond %in% comparison)
+  exp <- exp[cond.index]
+  cond <- cond[cond.index]
+  cond <- as.factor(cond)
+  
+  model <- glm((cond)~exp, family = binomial(link = 'logit'))
+  
+  ## caculate AUC
+  log_predict <- predict(model, newdata=as.data.frame(exp), type = "response")
+  log_predict <- ifelse(log_predict > 0.5,1,0)
+  
+  # binarize
+  cond.bin <- rep(0, length(cond))
+  cond.bin[cond==comparison[1]] <- 0
+  cond.bin[cond==comparison[2]] <- 1
+  
+  auc <- pROC::auc(cond.bin, log_predict)
+  
+  return(list(model, auc))
+}
+
+getModels <- function(patient_rpkm_genesets, patients){
+  ### train classifier for each gene
+  
+  aucs <- list()
+  models <- list()
+  for(i in rownames(patient_rpkm_genesets)){
+    exp <- patient_rpkm_genesets[i, ]
+    cond <- patients$condition
+    res <- fitLogistic(exp, cond, comparison=c("AKI", "CKD"))
+    aucs[[i]] <- data.frame(gene=i, auc=res[[2]])
+    models[[i]] <- res[[1]]
+  }
+  names(models) <- rownames(patient_rpkm_genesets)
+  
+  aucs <- do.call(rbind, aucs)
+  aucs <- aucs[order(aucs$auc, decreasing = T), ]
+  return(list(aucs, models))
+}
+
+#' plot fitted value from logistic regression
+#' @param model gene specific model object
+plotLogitFit <- function(gene.model, colorvec=NULL){
+  fitted.values <- gene.model[[1]]$fitted.values
+  if(!is.null(colorvec)){
+    plot(sort(fitted.values), col=colorvec[order(fitted.values)], pch=20, xlab="", ylab="", ylim=c(0, 1))
+    abline(h=0.5, lty=2, col="grey")
+    text(x=3, y=0.93, names(gene.model))
+  } else{
+    plot(sort(fitted.values), pch=20, xlab="", ylab="", ylim=c(0, 1))
+    abline(h=0.5, lty=2, col="grey")
+  }
+}
+
+#' plot fitted value from logistic regression
+#' @param model gene specific model object
+plotLogitFit2inte <- function(gene.model1, gene.model2, colorvec=NULL){
+  fitted.values1 <- gene.model1[[1]]$fitted.values
+  fitted.values2 <- gene.model2[[1]]$fitted.values
+  fitted.values <- c(fitted.values1, fitted.values2)
+  if(!is.null(colorvec)){
+    plot(sort(fitted.values), col=colorvec[order(fitted.values)], pch=20, xlab="", ylab="", ylim=c(0, 1))
+    abline(h=0.5, lty=2, col="grey")
+    text(x=3, y=0.93, names(gene.model1))
+  } else{
+    plot(sort(fitted.values), pch=20, xlab="", ylab="", ylim=c(0, 1))
+    abline(h=0.5, lty=2, col="grey")
+  }
+}
+
+# project stratified gene expression to tsne plot
+plotTsneGene <- function(exp, tSNE, cond.comp, out=1, gene.name=NULL){
+  
+  cond.comp <- as.factor(cond.comp)
+  
+  model <- glm((cond.comp)~tSNE$Y,family="binomial")
+  slope <- coef(model)[2]/(-coef(model)[3])
+  intercept <- coef(model)[1]/(-coef(model)[3]) 
+  
+  # scale
+  exp[exp>quantile(exp, 0.7)] <- quantile(exp, 0.7)
+  exp[exp<quantile(exp, 0.3)] <- quantile(exp, 0.3)
+  
+  grad <- (exp - min(exp)) / (max(exp) - min(exp))
+  plot(tSNE$Y[,1],tSNE$Y[,2],cex=1.5,las=1,xaxt="n",yaxt="n",
+       col=colorRampPalette(c("grey90","grey80","navy"))(50)[grad*49+1],
+       pch=20,line=.5,xlab="tSNE1", ylab="tSNE2",xlim=c(min(tSNE$Y[,1])*out,max(tSNE$Y[,1])*out),
+       ylim=c(min(tSNE$Y[,2])*out,max(tSNE$Y[,2])*out), main=gene.name)
+  axis(side = 1, labels = FALSE, tck = -0.01);axis(side = 2, labels = FALSE, tck = -0.01)
+  abline(intercept,slope,lty=2)
+}
+
+plotContourTsne <- function(tSNE, cond.comp, title=NULL, col, cex=2.5){
+  cond.comp <- as.factor(cond.comp)
+  
+  model <- glm((cond.comp)~tSNE$Y,family="binomial")
+  slope <- coef(model)[2]/(-coef(model)[3])
+  intercept <- coef(model)[1]/(-coef(model)[3]) 
+  
+  
+  z <- kde2d(tSNE$Y[,1], tSNE$Y[,2], n=100, lims = c(min(tSNE$Y[,1])*out, max(tSNE$Y[,1])*out, min(tSNE$Y[,2])*out, max(tSNE$Y[,2])*out))
+  plot(tSNE$Y[,1],tSNE$Y[,2],type="n",xaxt="n",yaxt="n",line=.5,xlab="tSNE1", ylab="tSNE2",xlim=c(min(tSNE$Y[,1])*out,max(tSNE$Y[,1])*out),ylim=c(min(tSNE$Y[,2])*out,max(tSNE$Y[,2])*out),main=title)
+  #contour(z, drawlabels=FALSE, nlevels=5, col=c("red","grey","blue2","orange3","firebrick"), add=TRUE)
+  contour(z, drawlabels=FALSE, nlevels=5, col=c("grey"), add=TRUE)
+  points(tSNE$Y[,1], tSNE$Y[,2],cex=cex, pch=20, col=col)
+  abline(intercept,slope,lty=2, col="lightgrey")
+}
+
+plotOverlapSets <- function(genesets1, genesets2){
+  genesets.union <- unique(c(genesets1, genesets2))
+  sc.vec <- rep(0, length(genesets.union))
+  sn.vec <- rep(0, length(genesets.union))
+  
+  df <- data.frame(sn=sn.vec, sc=sc.vec)
+  df$genesets <- genesets.union
+  df$sn[df$genesets %in% genesets1] <- 1
+  df$sc[df$genesets %in% genesets2] <- 1
+  
+  d <- vennCounts(df[, 1:2])
+  vennDiagram(d, circle.col=c("#507EB3", "#4D7880"))
 }
