@@ -1,0 +1,114 @@
+This is a code that can be used to generate the Spatial Transcriptomics (Visium 10X) figures for the manuscript "An atlas of healthy and injured cell states and niches in the human kidney"
+
+```{r}
+library(Seurat)
+library(ggplot2)
+library(RColorBrewer)
+library(dplyr)
+```
+
+Select the spatial sample to explore by changing the comments
+```{r}
+spatial <- readRDS('reference_cell_types.RDS')
+#spatial <- readRDS('reference_cell_states.RDS')
+#spatial <- readRDS('CKD_cell_types.RDS')
+#spatial <- readRDS('CKD_cell_states.RDS')
+```
+
+Select the color pattern according to the sample you are exploring (cell types or cell states)
+
+```{r}
+## Cell Types:
+coltable <- readRDS('cell_types_colors.RDS')
+## Cell States:
+#coltable <- readRDS('cell_states_colors.RDS')
+```
+
+
+Preliminary visualization of single nuclei reference class that better represents each spot signature
+```{r}
+Idents(spatial) <- factor(spatial$transfer_subset,levels=coltable[[1]])
+SpatialDimPlot(spatial,cols = coltable[[3]])
+```
+
+Select specific cell type from the first column of coltable or from the figure above to visualize the transfer scores:
+```{r}
+DefaultAssay(spatial) <- 'predictions'
+SpatialFeaturePlot(spatial,'M-TAL',crop = T)+
+        scale_fill_gradientn(colors=rev(brewer.pal(n = 11, name = "Spectral")))
+```
+
+Select some gene to visualize its expression over the plots
+```{r}
+DefaultAssay(spatial) <- 'SCT'
+SpatialFeaturePlot(spatial,'SLC12A1',crop = T)+
+        scale_fill_gradientn(colors=rev(brewer.pal(n = 11, name = "Spectral")))
+```
+
+Select the adequate image below
+```{r}
+    img <- tiff::readTIFF('reference.tif')
+    #img <- tiff::readTIFF('CKD.tif')
+```
+
+The chunk of code below generates the cell types proportions piechart (adapted from github.com/MarcElosua/SPOTlight) 
+```{r}
+DefaultAssay(spatial) <- 'predictions'
+
+metadata_ds <- as.data.frame(t(spatial@assays$predictions@data))
+    #colnames(metadata_ds) <- colnames(spatial@meta.data)
+    rownames(coltable) <- coltable[[1]]
+    coltable <- coltable[rownames(coltable) %in% colnames(metadata_ds),]
+    metadata_ds <- metadata_ds[,coltable[[1]]]
+
+rownames(coltable) <- coltable[[1]]
+    cols <- coltable[colnames(metadata_ds)[colSums(metadata_ds) > 0],][[3]]
+    
+    
+spatial_coord <- data.frame(spatial@images[['slice1']]@coordinates) %>%
+      tibble::rownames_to_column("barcodeID") %>%
+      dplyr::inner_join(metadata_ds %>% tibble::rownames_to_column("barcodeID"),
+                        by = "barcodeID")
+    
+    # Convert image to grob object
+    img_grob <- grid::rasterGrob(img,
+                                 interpolate = FALSE,
+                                 width = grid::unit(1, "npc"),
+                                 height = grid::unit(1, "npc"))
+    
+    ## Plot spatial scatterpie plot
+    scatterpie_plt <- suppressMessages(
+      ggplot2::ggplot() +
+        ggplot2::annotation_custom(
+          grob = img_grob,
+          xmin = 0,
+          xmax = ncol(img),
+          ymin = 0,
+          ymax = -nrow(img)) +
+        scatterpie::geom_scatterpie(
+          data = spatial_coord,
+          ggplot2::aes(x = imagecol,
+                       y = imagerow),
+          cols = coltable[[1]],
+          color = NA,
+          alpha = 1,
+          pie_scale = .3) +
+        ggplot2::scale_y_reverse() +
+        ggplot2::ylim(nrow(img), 0) +
+        ggplot2::xlim(0, ncol(img)) +
+        cowplot::theme_half_open(11, rel_small = 1) +
+        ggplot2::theme_void() +
+        ggplot2::coord_fixed(ratio = 1,
+                             xlim = NULL,
+                             ylim = NULL,
+                             expand = TRUE,
+                             clip = "on")+
+        ggplot2::scale_fill_manual(values = cols))
+    
+    scatterpie_plt
+    pdf('deconvolution_pie_chartd.pdf'),width=12,height = 8)
+    scatterpie_plt
+    dev.off()
+  
+```
+
