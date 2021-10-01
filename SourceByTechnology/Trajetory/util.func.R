@@ -1,7 +1,6 @@
 # related functions for fig 5, supplemental fig 12 and supplemental fig 14
 # author: Qiwen Hu - 2021
 
-
 #' calculate rpkm
 rpkm <- function(count, gene_length=NULL){
   total_reads <- colSums(count)
