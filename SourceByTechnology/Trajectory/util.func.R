@@ -53,18 +53,12 @@ test.associated.genes <- function(pt, mat, spline.df=3, n.cores=16, condition.ve
   df
 }
 
-rescale.and.center <- function(x, center=F, max.quantile=0.99) {
-  mx <- quantile(abs(x),max.quantile) # absolute maximum
-  if(mx==0) mx<-max(abs(x)) # in case the quantile squashes all the signal
-  x[x>mx] <- mx; x[x< -1*mx] <- -1*mx; # trim
-  if(center) x <- x-mean(x) # center
-  x/max(abs(x)); # scale
-}
 
 #' plot gene expression along with psedo-time
 #' 
 plot_gene_psedotime <- function(mat, gene.name=NULL, pseudotime, groups, dot.size=1, alpha=0.05,
-                                clpalatte=NULL, difftest.plot=TRUE, spline.df=3){
+                                clpalatte=NULL, difftest.plot=TRUE, spline.df=3,
+                                condition.smooth=FALSE){
   if(is.null(gene.name)){
     stop("please provide gene name to plot")
   }
@@ -90,7 +84,7 @@ plot_gene_psedotime <- function(mat, gene.name=NULL, pseudotime, groups, dot.siz
     diff.df <- data.frame(pseudotime=p[[1]]$x, expression=p[[1]]$fit, condition=levels(df$oannot)[1])
     diff.df <- rbind(diff.df, data.frame(pseudotime=p[[2]]$x, expression=p[[2]]$fit, condition=levels(df$oannot)[2]))
     print(ggplot(diff.df, aes(x=pseudotime, y=expression, group=condition)) + geom_line(aes(color=condition)) +
-      theme_bw() + ylab("expression - fitted") + ggtitle(gene.name))
+            theme_bw() + ylab("expression - fitted") + ggtitle(gene.name))
   }
   
   
@@ -109,6 +103,14 @@ plot_gene_psedotime <- function(mat, gene.name=NULL, pseudotime, groups, dot.siz
   
   q <- q + geom_line(aes(x=pseudotime, y=fit), data=df) + guides(colour = guide_legend(override.aes = list(alpha = 1)))+
     theme_bw() + ggtitle(gene.name)
+  
+  if(condition.smooth){
+    q <- ggplot(aes(pseudotime, exp, color=annot), data = df) + 
+      geom_point(size=dot.size, alpha=alpha, data=df) + 
+      geom_smooth(se = FALSE, method = "gam", formula = y ~ s(log(x))) + theme_bw() +
+      scale_color_manual(values=clpalatte)
+  }
+  
   return(q)
 }
 
@@ -422,27 +424,6 @@ classifyCelltype <- function(mat, n.cell.counts=1000, n.iter=1000, p.cutoff=0.00
   return(list(mcc=mcc, pvals=pvals, sigCelltypes=sigCelltypes))
 }
 
-#' extract balance matrix from cacoa object and assign batches in kidney dataset
-#' @param samples.region.df data frame contains sampleID, specimen_id, percent.cortex and region
-get_balance_matrix <- function(cao, samples.region.df){
-  d.counts <- data.frame(anno=cao$cell.groups,
-                         group=cao$sample.per.cell[match(names(cao$cell.groups), names(cao$sample.per.cell))]) %>%
-    table  %>% rbind %>% t
-  d.groups <- cao$sample.groups[rownames(d.counts)] == cao$target.level
-  
-  
-  # get balance matrix
-  balance <- getRndBalances(d.counts)$norm %>% as.data.frame()
-  sample.region.df <- samples.region.df[match(rownames(balance), samples.region.df[, 1]), ]
-  sample.region.df$cat <- "High"
-  sample.region.df[sample.region.df$percent.cortex<70, ]$cat <- "Low"
-  
-  balance <- cbind(data.frame(sample=sample.region.df[, 1]), balance)
-  balance$percent.cortex <- sample.region.df$percent.cortex
-  balance$region <- sample.region.df$region
-  balance$condition <- sample.region.df$condition
-  return(balance)
-}
 
 #' fit linear models, performance measured by leave-one out
 #' @param data data for model fitting - the last column is response
@@ -491,69 +472,6 @@ fitLM <- function(data, method="lm"){
   rsqure <- round(corelation^2, 2)
   
   return(list(cor=corelation, rmse=rmse, rsqure=rsqure, predicted=predicted))
-}
-
-#' weighted rank differences
-#' rank differenced based on normalized -log(p-values)
-#' 
-weightedDiff <- function(df1, df2){
-  df1$norm <- -log(df1$pvals) / sum(-log(df1$pvals))
-  df2$norm <- -log(df2$pvals) / sum(-log(df2$pvals))
-  df <- merge(df1, df2, by=c(1))
-  df$rankdiff <- df$norm.x - df$norm.y
-  
-  p <- ggplot(data=df, aes(reorder(celltype, rankdiff), rankdiff)) + geom_bar(stat="identity") + coord_flip() + 
-    theme_bw() + ylab("Diff") + xlab("celltype")
-  return(p)
-}
-
-#' return cda p-values for simulated datasets
-cdaPvalues <- function(mat, n.cell.counts=1000, n.iter=1000, p.cutoff=0.001,
-                       ref.level="normal", target.level="injury"){
-  n.rep <- length(mat$count)
-  
-  df <- lapply(1:n.rep, function(r){
-    t <- resampleContrast(mat$count[[r]], mat$params$d.groups, n.cell.counts=1000, n.iter=1000)
-    pvals <- as.data.frame(t(getCellSignificance(t$balances)))
-    #sigCelltypes <- names(pvals)[pvals<p.cutoff]
-    pvals$rep <- r
-    #rownames(pvals) <- ""
-    pvals
-  }) %>% dplyr::bind_rows()
-  
-  df$ncell <- mat$params$n.cells
-  df$ncelltype <- mat$params$n.celltypes
-  df$nsamples <- sum(mat$params$n.samples)
-  df$mu <- mat$params$base
-  df$mu.pr <- mat$params$clevel
-  df$lf <- mat$params$lf
-  
-  return(df)
-}
-
-getBalancePlot <- function(mat, palette, font.size=8, ref.celltype=NULL, p.cutoff=0.1, target.level="disease"){
-  bal <- getRndBalances(mat$count)
-  #bal <- getRndBalances(mat$count[[1]])
-  pca.res <- prcomp(bal$norm)
-  t <- resampleContrast(mat$count, mat$params$d.groups, n.cell.counts=1000, n.iter=1000,
-                        ref.celltype=ref.celltype)
-  #t <- resampleContrast(mat$count[[1]], mat$params$d.groups, n.cell.counts=1000, n.iter=1000,
-  #                      ref.celltype=ref.celltype)
-  pca.loadings <- bal$psi %*% pca.res$rotation
-  
-  t$bal <- bal
-  t$pca.res <- pca.res
-  t$pca.loadings <- pca.loadings
-  t$pvals <- getCellSignificance(t$balances)
-  
-  if(!is.null(ref.celltype)){
-    t$pvals[names(t$pvals)==ref.celltype] <- 1
-  }
-  
-  # plot contrast
-  p <- plotCellLoadings(t, ordering='by.pvalue', alpha=0.05, signif.threshold=p.cutoff, show.pvals=T,
-                        ref.level="Ref", target.level=target.level, font.size=font.size, palette=palette, ref.celltype=ref.celltype)
-  return(list(plot=p, cda=t))
 }
 
 #' @param count list of count matrices
@@ -903,83 +821,6 @@ GOanalysis <- function(markers, n, outputFunc="BP"){
   return(result)
 }
 
-
-#' sample-level clustering based on different genesets
-sample_clustering <- function(rpkm, genesets=NULL, rpkm_cutoff=0.1, num_clusters,
-                              patients.df, plot=TRUE, plot.dend=TRUE, num.dim=3,
-                              title=NULL){
-  sample_expressed <- ncol(rpkm)
-  rpkm <- rpkm[(rowSums(rpkm) > rpkm_cutoff*ncol(rpkm)), ]
-  rpkm <- rpkm[which(apply(rpkm, 1, min) > 0), ]
-  
-  # push to monocle object
-  sample_sheet <- data.frame(samples=colnames(rpkm))
-  rownames(sample_sheet) <- sample_sheet$samples
-  gene_annotation <- data.frame(id=rownames(rpkm), gene_short_name=rownames(rpkm))
-  rownames(gene_annotation) <- gene_annotation$id
-  
-  pd <- new("AnnotatedDataFrame", data = sample_sheet)
-  fd <- new("AnnotatedDataFrame", data = gene_annotation)
-  HSMM <- newCellDataSet(as.matrix(rpkm),
-                         phenoData = pd,
-                         featureData = fd,
-                         lowerDetectionLimit = 0.1,
-                         expressionFamily = tobit(Lower = 0.1))
-  
-  HSMM <- estimateSizeFactors(HSMM)
-  HSMM <- detectGenes(HSMM, min_expr = 0.1)
-  
-  if(!is.null(genesets)){
-    expressed_genes <- row.names(subset(fData(HSMM),
-                                        num_cells_expressed >= 1))
-  } else{
-    expressed_genes <- row.names(subset(fData(HSMM),
-                                        num_cells_expressed == nrow(sample_sheet)))
-  }
-  
-  # reduce dimension and plot cells
-  HSMM <- reduceDimension(HSMM[expressed_genes, ], max_components = 2, num_dim = num.dim,
-                          reduction_method = 'tSNE', verbose = TRUE, perplexity= 3)
-  HSMM <- clusterCells(HSMM, num_clusters=num_clusters)
-  
-  conditions <- setNames(patients.df$condition.l1, patients.df$patient_id)
-  pData(HSMM)$condition.l2 <- patients.df$condition.l2
-  pData(HSMM)$tissue_type <- patients.df$tissue_type
-  pData(HSMM)$sex <- patients.df$sex
-  pData(HSMM)$condition <- conditions
-  
-  if(plot){
-    p1 <- plot_cell_clusters(HSMM)
-    p2 <- plot_cell_clusters(HSMM, color_by="condition")
-    p3 <- plot_cell_clusters(HSMM, color_by="condition.l2")
-    p4 <- plot_cell_clusters(HSMM, color_by="tissue_type", show_cell_names=TRUE, cell_name_size=1)
-    p5 <- plot_cell_clusters(HSMM, color_by="sex", show_cell_names=TRUE, cell_name_size=1)
-    plotlist <- list(p1, p2, p3, p4, p5)
-  } else{
-    plotlist=NULL
-  }
-  
-  if(plot.dend){
-    sample.cor <- cor(HSMM[expressed_genes, ]@assayData$exprs)
-    dend <- hclust(as.dist(sample.cor), method='ward.D2')
-    dend <- as.dendrogram(dend)
-    
-    leaf.labels <- labels(dend)
-    leaf.condition <- patients.df[match(leaf.labels, patients.df$specimen), ]$condition.l1
-    leaf.condition[leaf.condition == "AKI"] <- "red"
-    leaf.condition[leaf.condition == "Ref"] <- "blue"
-    leaf.condition[leaf.condition == "CKD"] <- "green"
-    
-    print(dend %>% set("leaves_pch", 19) %>%  # node point type
-            set("leaves_cex", 1) %>%  # node point size
-            set("leaves_col", leaf.condition) %>% # node point color
-            set("labels_cex", 0.7) %>% hang.dendrogram(hang=0.5) %>%
-            plot(main = title))
-  }
-  
-  return(list(monocle=HSMM, plots=plotlist))
-}
-
 quickUmap <- function(reduction, space="PCA", dims=NULL, n.neighbors=30L, n.components=2L,
                       metric='cosine', n.epochs=NULL, learning.rate=1.0, min.dist=0.3,
                       spread=1.0, set.op.mix.ratio=1.0, local.connectivity=1L, repulsion.strength=1,
@@ -1063,14 +904,6 @@ plotCompositionBarplots <- function(groups, sample.factor=NULL,
   return(pl)
 }
 
-
-getCorrected <- function(y, mod, svs) {
-  X = cbind(mod, svs)
-  Hat = solve(t(X) %*% X) %*% t(X)
-  beta = (Hat %*% t(y))
-  P = ncol(mod)
-  return(y - t(as.matrix(X[,-c(1:P)]) %*% beta[-c(1:P),]))
-}
 
 #' differential expression based on DESeq
 #' @mat speudo-bulk count matrix - rows are genes columns are sample
@@ -1447,4 +1280,54 @@ plotOverlapSets <- function(genesets1, genesets2){
   
   d <- vennCounts(df[, 1:2])
   vennDiagram(d, circle.col=c("#507EB3", "#4D7880"))
+}
+
+#' plot summary of DE genes
+#' @param cao list of cacoa object
+plotDEsummary <- function(cao, p.adjust = TRUE, pvalue.cutoff = 0.05, 
+                           show.jitter = FALSE, jitter.alpha = 0.05, palette=cao[[1]]$cell.groups.palette,
+                           type = "bar", notch = TRUE, show.whiskers = TRUE, show.regression = TRUE){
+  
+  # turn resampling option off
+  show.resampling.results = FALSE
+  
+  df <- list()
+  for(i in 1:length(cao)){
+    de.raw <- cao[[i]]$test.results$deFixed
+    
+    if (show.resampling.results) {
+      if (!all(unlist(lapply(de.raw, function(x) !is.null(x$subsamples))))) {
+        warning("resampling results are missing for at least some cell types, falling back to point estimates. Please rerun estimatePerCellTypeDE() with resampling='bootstrap' or resampling='loo'")
+        rl <- lapply(de.raw, `[[`, "res")
+      }
+      else {
+        subsamples <- lapply(de.raw, `[[`, "subsamples")
+        rl <- unlist(subsamples, recursive = FALSE) %>% setNames(rep(names(de.raw), 
+                                                                     sapply(subsamples, length)))
+      }
+    }
+    else {
+      rl <- lapply(de.raw, `[[`, "res")
+    }
+    
+    df[[i]] <- do.call(rbind, lapply(1:length(rl), function(j){
+      if (p.adjust) {
+        ndiff <- sum(na.omit(rl[[j]]$padj <= pvalue.cutoff))
+      }
+      else {
+        ndiff <- sum(na.omit(rl[[j]]$pvalue <= pvalue.cutoff))
+      }
+      data.frame(Type = names(rl)[j], value = ndiff, stringsAsFactors = FALSE)
+    }))
+    
+  }
+  df <- df %>% Reduce(function(dtf1 ,dtf2) left_join(dtf1, dtf2,by="Type"), .)
+  df$value <- rowSums(df[, 2:ncol(df)])
+  
+
+  p <- cacoa:::plotCellTypeSizeDep(df, cao[[1]]$cell.groups, palette = palette, 
+                             ylab = "number of DE genes", yline = NA, show.whiskers = show.whiskers, 
+                             show.regression = show.regression, plot.theme=cao[[1]]$plot.theme)
+
+  return(p)
 }
