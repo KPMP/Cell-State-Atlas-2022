@@ -274,22 +274,6 @@ randomPatition <- function(cd, k=3){
   return(cmatrix)
 }
 
-# tranform ggdend - modified from cacoa ggend
-# dend.data$segments contains col column
-ggdendT <- function(dend.data, a = 90) {
-  dend.data$segments$colorcode <- paste("colorcode", seq(1, nrow(dend.data$segments)), sep="")
-  cols <- setNames(dend.data$segments$col, dend.data$segments$colorcode)
-  
-  ggplot() +
-    geom_segment(data = dend.data$segments, aes(x=x, y=y, xend=xend, yend=yend, col=colorcode), show.legend=FALSE) +
-    scale_color_manual(values = cols) + 
-    labs(x = "", y = "")  + theme_minimal() +
-    theme(axis.text = element_blank(), axis.ticks = element_blank(),
-          panel.grid = element_blank()) +
-    geom_text(data = dend.data$labels, aes(x, y, label = label),
-              hjust = 1, angle = a, size = 3) + ylim(-0.5, NA)
-}
-
 
 #' generate random permuted data from a matrix
 permutation <- function(mat, ref=NULL){
