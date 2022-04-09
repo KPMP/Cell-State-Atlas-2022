@@ -1,12 +1,12 @@
 # single cell Seq Codebase
 
-The included files are for reproducing the analysis and figures generated in the manuscript, including **Figure XX** and **Figure ED XX**, as indicated in the code text. 
+The included files are for reproducing the analysis and figures generated in the manuscript, including **Figure 5a,b**, **Figure 6a,b**, **Extended Data Figure 11 a,c,f**,  **Extended Data Figure 13e**, and **Extended Data Figure 14a,f**, as indicated in the code text. 
 
 Files included:
 
 File | Description
 ------------ | -------------
-xxxxxx | XXXXXXXXXXXXXXXXX
-xxxxxx | XXXXXXXXXXXXXXXXX
+until.func.R | R functions of related figures and analysis
+Trajectory analysis | Prepare.trajectory.obj.R
 xxxxxx | XXXXXXXXXXXXXXXXX
 
