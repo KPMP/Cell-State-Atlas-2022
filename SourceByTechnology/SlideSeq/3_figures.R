@@ -173,7 +173,6 @@ ssg.all <- filterWeights(ssg.all, 'maxWeight.l2', 'maxCelltype.l2', 30, c())
 genes2plot <- unlist(lapply(genes2plot.df$V2, function(x) strsplit(x, ", ")))
 genes2plot <- unique(genes2plot[genes2plot %in% ssg.all@gene_ID])
 
-# same thing with normalized data
 rownames(ssg.all@cell_metadata) <- ssg.all@cell_metadata$cell_ID
 sss.norm <- CreateSeuratObject(counts = ssg.all@raw_exprs, meta.data = ssg.all@cell_metadata)
 sss.norm <- NormalizeData(sss.norm, normalization.method = 'LogNormalize')
@@ -223,7 +222,7 @@ DotPlot(sss.sub, features = (genes2plot.glom), cols = c('gray95', 'orange'), dot
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5, size = 9.4))
 dev.off()
 
-# Figure 2d: outer to inner medulla transition
+# Figure 2d: outer to inner medulla transition ####
 rotateGiotto <- function(gObj, ang){
   R <- matrix(c(cos(ang), -sin(ang), sin(ang), cos(ang)), 2, byrow = T)
   gObj@spatial_locs[, c(1, 2)] <- as.data.frame(t(R %*% t(subset(gObj@spatial_locs, 
