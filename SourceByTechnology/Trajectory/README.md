@@ -8,6 +8,5 @@ File | Description
 ------------ | -------------
 until.func.R | R functions of related figures and analysis
 Trajectory analysis | Prepare.trajectory.obj.R <br /> [Trajectory associated genes](https://github.com/winfrees/Cell-State-Atlas-2021/blob/main/SourceByTechnology/Trajectory/notebooks/Trajectory.md)
-Sample-Level Clustering | XXXXXXXXXXXXXXXXX
 Cell density, DEG and functional Analysis | preprocess.cacoa.R <br /> cacoa.analysis.Rmd
 Ligand-receptor analysis | prepare.LR.obj.R <br /> [LR analysis](https://github.com/winfrees/Cell-State-Atlas-2021/blob/main/SourceByTechnology/Trajectory/notebooks/LR.md)
