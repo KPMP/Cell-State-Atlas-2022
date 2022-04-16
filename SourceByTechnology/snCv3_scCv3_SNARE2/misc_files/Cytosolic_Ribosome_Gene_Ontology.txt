@@ -1,0 +1,135 @@
+Gene ID	Symbol	Name
+6144	RPL21	ribosomal protein L21
+140032	RPS4Y2	ribosomal protein S4 Y-linked 2
+6146	RPL22	ribosomal protein L22
+140801	RPL10L	ribosomal protein L10 like
+6147	RPL23A	ribosomal protein L23a
+6152	RPL24	ribosomal protein L24
+6154	RPL26	ribosomal protein L26
+6155	RPL27	ribosomal protein L27
+6156	RPL30	ribosomal protein L30
+6157	RPL27A	ribosomal protein L27a
+6158	RPL28	ribosomal protein L28
+6159	RPL29	ribosomal protein L29
+6160	RPL31	ribosomal protein L31
+25873	RPL36	ribosomal protein L36
+6161	RPL32	ribosomal protein L32
+6164	RPL34	ribosomal protein L34
+6165	RPL35A	ribosomal protein L35a
+6166	RPL36AL	ribosomal protein L36a like
+6167	RPL37	ribosomal protein L37
+6168	RPL37A	ribosomal protein L37a
+6169	RPL38	ribosomal protein L38
+6170	RPL39	ribosomal protein L39
+6171	RPL41	ribosomal protein L41
+6173	RPL36A	ribosomal protein L36a
+6175	RPLP0	ribosomal protein lateral stalk subunit P0
+6176	RPLP1	ribosomal protein lateral stalk subunit P1
+6181	RPLP2	ribosomal protein lateral stalk subunit P2
+9513	FXR2	FMR1 autosomal homolog 2
+6187	RPS2	ribosomal protein S2
+6188	RPS3	ribosomal protein S3
+6189	RPS3A	ribosomal protein S3A
+220717	RPLP0P6	ribosomal protein lateral stalk subunit P0 pseudogene 6
+6191	RPS4X	ribosomal protein S4 X-linked
+6192	RPS4Y1	ribosomal protein S4 Y-linked 1
+6193	RPS5	ribosomal protein S5
+10289	EIF1B	eukaryotic translation initiation factor 1B
+6194	RPS6	ribosomal protein S6
+28985	MCTS1	MCTS1 re-initiation and release factor
+6201	RPS7	ribosomal protein S7
+645683	RPL13AP3	ribosomal protein L13a pseudogene 3
+6202	RPS8	ribosomal protein S8
+6203	RPS9	ribosomal protein S9
+6204	RPS10	ribosomal protein S10
+6205	RPS11	ribosomal protein S11
+3646	EIF3E	eukaryotic translation initiation factor 3 subunit E
+6206	RPS12	ribosomal protein S12
+6207	RPS13	ribosomal protein S13
+6208	RPS14	ribosomal protein S14
+6209	RPS15	ribosomal protein S15
+6210	RPS15A	ribosomal protein S15a
+90441	ZNF622	zinc finger protein 622
+25929	GEMIN5	gem nuclear organelle associated protein 5
+6217	RPS16	ribosomal protein S16
+6218	RPS17	ribosomal protein S17
+6222	RPS18	ribosomal protein S18
+6223	RPS19	ribosomal protein S19
+6224	RPS20	ribosomal protein S20
+3921	RPSA	ribosomal protein SA
+51538	ZCCHC17	zinc finger CCHC-type containing 17
+6227	RPS21	ribosomal protein S21
+6228	RPS23	ribosomal protein S23
+9045	RPL14	ribosomal protein L14
+6229	RPS24	ribosomal protein S24
+6230	RPS25	ribosomal protein S25
+6231	RPS26	ribosomal protein S26
+6232	RPS27	ribosomal protein S27
+6233	RPS27A	ribosomal protein S27a
+6234	RPS28	ribosomal protein S28
+347	APOD	apolipoprotein D
+6235	RPS29	ribosomal protein S29
+116832	RPL39L	ribosomal protein L39 like
+113251	LARP4	La ribonucleoprotein 4
+29803	REPIN1	replication initiator 1
+1654	DDX3X	DEAD-box helicase 3 X-linked
+51065	RPS27L	ribosomal protein S27 like
+728689	EIF3CL	eukaryotic translation initiation factor 3 subunit C like
+26747	NUFIP1	nuclear FMR1 interacting protein 1
+4736	RPL10A	ribosomal protein L10a
+9349	RPL23	ribosomal protein L23
+100101490	MCTS2P	MCTS family member 2, pseudogene
+10891	PPARGC1A	PPARG coactivator 1 alpha
+7311	UBA52	ubiquitin A-52 residue ribosomal protein fusion product 1
+1939	EIF2D	eukaryotic translation initiation factor 2D
+553117	RPL39P5	ribosomal protein L39 pseudogene 5
+2197	FAU	FAU ubiquitin like and ribosomal protein S30 fusion
+285855	RPL7L1	ribosomal protein L7 like 1
+10399	RACK1	receptor for activated C kinase 1
+1965	EIF2S1	eukaryotic translation initiation factor 2 subunit alpha
+51121	RPL26L1	ribosomal protein L26 like 1
+6838	SURF6	surfeit 6
+51386	EIF3L	eukaryotic translation initiation factor 3 subunit L
+27335	EIF3K	eukaryotic translation initiation factor 3 subunit K
+8661	EIF3A	eukaryotic translation initiation factor 3 subunit A
+440275	EIF2AK4	eukaryotic translation initiation factor 2 alpha kinase 4
+8662	EIF3B	eukaryotic translation initiation factor 3 subunit B
+8663	EIF3C	eukaryotic translation initiation factor 3 subunit C
+200916	RPL22L1	ribosomal protein L22 like 1
+11224	RPL35	ribosomal protein L35
+8664	EIF3D	eukaryotic translation initiation factor 3 subunit D
+8665	EIF3F	eukaryotic translation initiation factor 3 subunit F
+93144	RPS10P5	ribosomal protein S10 pseudogene 5
+8666	EIF3G	eukaryotic translation initiation factor 3 subunit G
+8667	EIF3H	eukaryotic translation initiation factor 3 subunit H
+8668	EIF3I	eukaryotic translation initiation factor 3 subunit I
+8669	EIF3J	eukaryotic translation initiation factor 3 subunit J
+3039	HBA1	hemoglobin subunit alpha 1
+3040	HBA2	hemoglobin subunit alpha 2
+23521	RPL13A	ribosomal protein L13a
+10209	EIF1	eukaryotic translation initiation factor 1
+83939	EIF2A	eukaryotic translation initiation factor 2A
+54505	DHX29	DExH-box helicase 29
+5610	EIF2AK2	eukaryotic translation initiation factor 2 alpha kinase 2
+6122	RPL3	ribosomal protein L3
+6123	RPL3L	ribosomal protein L3 like
+9451	EIF2AK3	eukaryotic translation initiation factor 2 alpha kinase 3
+6124	RPL4	ribosomal protein L4
+6125	RPL5	ribosomal protein L5
+10480	EIF3M	eukaryotic translation initiation factor 3 subunit M
+6128	RPL6	ribosomal protein L6
+65008	MRPL1	mitochondrial ribosomal protein L1
+6129	RPL7	ribosomal protein L7
+6130	RPL7A	ribosomal protein L7a
+51187	RSL24D1	ribosomal L24 domain containing 1
+6132	RPL8	ribosomal protein L8
+6133	RPL9	ribosomal protein L9
+6134	RPL10	ribosomal protein L10
+6135	RPL11	ribosomal protein L11
+6136	RPL12	ribosomal protein L12
+6137	RPL13	ribosomal protein L13
+6138	RPL15	ribosomal protein L15
+6139	RPL17	ribosomal protein L17
+6141	RPL18	ribosomal protein L18
+6142	RPL18A	ribosomal protein L18a
+6143	RPL19	ribosomal protein L19

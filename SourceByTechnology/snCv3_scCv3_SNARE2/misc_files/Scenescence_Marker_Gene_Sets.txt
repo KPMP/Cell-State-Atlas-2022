@@ -1,0 +1,310 @@
+Tabula.Muris	Takemon	Ruscetti	Zamudio	Segura	Casella	Basisty
+Cd74	1110004F10Rik	MT-ND2	ABCA1	ICAM1	TMEM159	ALDH18A1
+Tmsb4x	Abcb1a	L1CAM	AHNAK2	LEP	CHPF2	CDKN2A
+B2m	Abcg3	STXBP1	AMPD3	IL1A	SLC9A7	CDKN2B
+Rps4x	Acta2	GM2A	BCL2A1	IL1B	PLOD1	ERGIC1
+Rps7	Actb	CSTB	BGN	CXCL8	FAM234B	VDAC3
+Rpl10	Ada	RHOB	C3	IGFBP2	DHRS7	FLII
+Rps19	Aebp1	KRT8	CCL3	IL6	SRPX	TOMM70A
+Rps13	Aida	MUC1	CCL3L3	IL11	SRPX2	VDAC1
+Rpl12	Akr1b8	DDR1	CD68	CSF2	TNFSF13B	GDF15
+Rplp0	Akr1c13	CLU	CLMP	PLAUR	PDLIM1	GPX1
+H2-Ab1	Akt1	GAS6	COL6A1	VEGFA	ELMOD1	IDH2
+Ly6e	Alcam	IL6	COL6A2	CXCL1	CCND3	ATL3
+Rpl13a	Aldh18a1	NFKB2	COLEC12	IGFBP4	TMEM30A	SPON1
+Rps3a	Aldh1a2	CX3CL1	CXCL1	IGFBP7	STAT1	OSTF1
+H2-D1	Aldh2	CCL2	CXCL3	FGF2	RND3	ARPC5L
+Rps15a	Anxa1	NFE2L2	CXCL5	FGF7	TMEM59	ATP6V0A1
+Rpl17	Anxa3	SERPINE1	CXCL6	IGFBP6	SARAF	RHOC
+Rps9	Apbb1ip	CXCL11	DUSP4	MMP1	SLCO2B1	CLU
+Rps6	Apob	ACVRL1	DUSP6	MMP3	ARRDC4	VDAC2
+Rpsa	Apoe	PVR	EREG	MMP10	PAM	LARS
+	Arhgap25	CD82	FAM214B	PGF	WDR78	ACADM
+	Arhgdib	PLAU	FGF7	CCL2	CLSTN2	SNRPB
+	Arpc1b	IL15	GJA1	CCL5	WDR63	SNRPN
+	Arpc2	SGMS2	IL1B	CXCL5	NCSTN	TNFAIP8
+	Arrb2	ATP2C1	IL6	TIMP2	SLC16A14	HBA1
+	Bcam	CD40	LGALS3BP	TNFRSF10C	GPR155	CKM
+	Bgn	BST2	MMP2	CCL20	CLDN1	HMGA1
+	Bin1	ITGA5	MYO1F	AXL	JCAD	TGM2
+	Bin2	HIF1A	NAIP	GDNF	BLCAP	TUBB1
+	C1qa	ATP2A2	OAF	PLK3	FILIP1L	TUBB2A
+	C1qb	CSF1	OSMR	SLC16A3	TAP1	EEF1A1
+	C1qc	IGFBP7	PDPN	TSPAN13	TNFRSF10C	XPNPEP3
+	C3	KLF6	PHLDA1	CCND1	SAMD9L	TUBA1A
+	C4b	IFNAR1	PILRA	P4HA2	SMOC3	TUBB4B
+	C7	PSEN1	PLAT	SLC10A3	POFUT2	GALE
+	Cacna2d1	TAPBP	PTGS2	TSPAN13	KIAA1671	CANX
+	Cald1	IRF1	PTPRE	CCND1	LRP10	PKM
+	Cald1	IL1R1	RHOB	P4HA2	BMS1P9	USP9X
+	Calm2	NAMPT	RNF149	SLC10A3	MT-TA	RPS11
+	Camk1	CXCL10	SEMA3C	ZBTB7A	MT-TN	TUBB6
+	Camk1d	IL15RA	SEZ6L2	SCOC	MT-TC	IGFBP2
+	Capn5	IFNGR1	SLC6A8	UFM1	MT-TY	CYB5R3
+	Capzb	TNFRSF9	SQRDL	B4GALT7	DIO2	ASPH
+	Casp1	HLA-C	TIMP1	ADADVL	MAP4K3-DT	TUBA4B
+	Cbr3	HLA-B	TM4SF1	POFUT2	AC002480.1	GYS1
+	Cd302	HLA-A	TNFAIP6	TAF13	LINC02154	SLC25A24
+	Cd74	TAP1	TNFRSF1B	NOL3	TM4SF1-AS1	DYNC1H1
+	Cdk2	ATF3	TWIST2	ADPGK	PTCHD4	TMEM109
+	Cdk4	IFIT2	WLS	DDA1	H2AFJ	IQGAP1
+	Celf2	GADD45A	ZNFX1	ZNHIT1	PURPL	FUCA1
+	Ces2e	RCAN1		CHMP5		LRBA
+	Cfi	FOSL2		TOLLIP		CXCL8
+	Cfl1	BIRC2		KLC1		LAMA3
+	Cfp	NINJ1		TMEM87B		SCARB2
+	Cirbp	PNRC1		BCL2L2		TUBB
+	Clca3a1	KDM6B		SUSD6		TUBA8
+	Clic1	DNAJB4		DYNLT3		CKB
+	Cnn2	STAT1		RAI14		CAPN2
+	Colgalt1	ISG15		GBE1		TUBAL3
+	Coro1a	XAF1		FAM214B		TUBB2B
+	Cp	MX1		PDLIM4		ARL6IP5
+	Crip1	IFIT3		DGKA		PRDX5
+	Cript	B2M		PLXNA3		EEF1E1
+	Crlf3	STAT3		MT-CYB		SLC25A6
+	Csrp1					PFKP
+	Cstb					DDOST
+	Ctsc					VARS
+	Ctse					ATP5O
+	Ctss					HSD17B10
+	Cybb					HBD
+	Cygb					HBE1
+	Dbnl					HBB
+	Ddx39					HBG1
+	Ddx39b					HBG2
+	Dnajc8					CSRP2
+	Dnase2a					CRYAB
+	Dock2					CRYM
+	Dpysl3					CMBL
+	Dsg2					CLIC1
+	Efhd2					ELAVL1
+	Ehbp1l1					RHOA
+	Ehd2					EPS8L2
+	Ehd4					S100A10
+	Eif1a					TUBB8
+	Eif3f					ATP6V1E1
+	Eif6					MYLK3
+	Eno2					MYLK4
+	Eno3					MYLK2
+	Entpd1					TFPI2
+	Epb41l2					ANXA1
+	Eri3					NOL3
+	Etnppl					HSPA9
+	F13a1					GAPDH
+	Fam114a1					MAPK13
+	Fam129a					MAPK8
+	Fam49b					MAPK9
+	Fbln1					MAPK12
+	Fbln1					MAPK10
+	Fbxo6					MAPK11
+	Fbxw17					MAPK14
+	Fbxw9					FAM129B
+	Fen1					HADHA
+	Fermt3					APRT
+	Fignl1					TUBB3
+	Fkbp10					EIF4A2
+	Fscn1					ANXA2
+	Ftcd					LAMTOR1
+	Fyb					PDLIM1
+	Gale					ACTB
+	Gbp2					ACTG1
+	Ggt5					SOD2
+	Gmfg					GALNS
+	Gnai2					RPS20
+	Gnao1					VASP
+	Gnpda2					CES2
+	Gpc3					TMED9
+	Gpt					COX5B
+	Grk2					RAB10
+	Gsdmd					AK1
+	Gsr					IMPDH2
+	Gstm5					DYNLRB1
+	Gstm6					KIF5B
+	Gtf2f2					NCK2
+	H2-Aa					NCK1
+	H2-Ab1					S100A16
+	Hgh1					CPNE1
+	Hk2					RPS3A
+	Hk3					PHB
+	Hnrnpd					PGRMC1
+	Hnrnpdl					YBX1
+	Hpf1					TLN1
+	Hypk					RPS4X
+	Icam1					SQRDL
+	Ifi47					IMMT
+	Igfbp2					PFN2
+	Igha					PAFAH1B2
+	Ighg2b					BDH2
+	Ighg3					UGDH
+	Ighm					RPL11
+	Ighv1-82					ME2
+	Ighv5-17					VAT1
+	Ighv6-6					STRBP
+	Ighv9-4					TUFM
+	Igkc					USO1
+	Igkv1-117					VTN
+	Igkv14-126					SNX2
+	Igkv5-39					HTRA1
+	Igkv8-30					DDRGK1
+	Il16					C21orf33
+	Impdh2					RAB15
+	Inpp5d					CORO1B
+	Itga2					ILK
+	Itgb2					PGM2L1
+	Itgb3					TUBA4A
+	Jchain					RAN
+	Katnb1					CRIP2
+	Kynu					PSMC2
+	Lcn2					LRRC47
+	Lcp1					TUBB4A
+	Lmcd1					TES
+	Lrg1					ACTC1
+	Lrp1					SNRPE
+	Lsp1					CAPNS1
+	Lxn					TMED10
+	Ly6e					MYLK
+	Lyz2					FLOT1
+	Mad2l1					MYOF
+	Mapk12					RAB6A
+	Mapk13					RAB6B
+	Marcks					PSMD7
+	Mbnl1					ACTBL2
+	Mcam					STC2
+	Mcm2					TPD52L2
+	Mcm3					SDHB
+	Mcm4					PDLIM4
+	Mfge8					UBE2V1
+	Mical1					DPYSL2
+	Mknk1					PPP1R7
+	Mlkl					UBA1
+	Mrc1					HSPA1A
+	Mrc2					HSPA1B
+	Msn					FBL
+	Mt2					MAP4
+	Mthfd1l					H2AFY
+	Mthfd2					RPL14
+	Myd88					SFPQ
+	Myo1f					SEC31A
+	Myo1g					CLTC
+	Mzb1					RPL4
+	Naaa					RPL18A
+	Nckap1l					ATP5A1
+	Necap2					FLOT2
+	Nectin2					CSRP1
+	Nphs1					MYL12B
+	Nrbp2					MYL12A
+	Nt5c					FAM129A
+	Nudt16					RAB33B
+	Olfml3					PLEC
+	Pacsin1					S100A11
+	Pafah1b3					MPST
+	Parp10					GSTO1
+	Pcna					GUK1
+	Pdlim1					DSTN
+	Pgd					ARPC1B
+	Pglyrp2					RPL5
+	Pigr					POTEF
+	Pir					GAA
+	Pla2g15					POLR3C
+	Plcb2					UGP2
+	Pld4					SEC22B
+	Plek					PICALM
+	Plekho2					MACF1
+	Pltp					DLST
+	Ppp1r18					PPP1CA
+	Prdx4					TUBA1C
+	Pros1					DCN
+	Prpf39					GLRX
+	Psmb10					CBR1
+	Psmb8					RPL7A
+	Psmb9					PTGR1
+	Psme1					KRT86
+	Pspc1					KRT83
+	Ptk7					KRT81
+	Ptp4a2					CAPG
+	Ptpn6					POTEJ
+	Ptprc					PTER
+	Pygb					NCSTN
+	Rab12					COPG1
+	Rab4b					SCIN
+	Rac2					
+	Rap2b					
+	Rbm3					
+	Rcc1l					
+	Rcc2					
+	Rcn1					
+	Rcn3					
+	Reep6					
+	Rel					
+	Rela					
+	Rftn1					
+	Rgl2					
+	Rgs10					
+	Rhob					
+	Rpa2					
+	Rpl34					
+	Rpl38					
+	Rpl8					
+	Rps10					
+	Rps27					
+	Rrm1					
+	S100a9					
+	Samhd1					
+	Sbno2					
+	Sept6					
+	Serpina1a					
+	Serpina3n					
+	Serpinb6a					
+	Serpinb6b					
+	Serpinb9					
+	Serpine2					
+	Serpinf1					
+	Serping1					
+	Sh3bgrl3					
+	Sh3bp1					
+	Sh3kbp1					
+	Sh3pxd2b					
+	Slc34a2					
+	Slc7a6os					
+	Slco2a1					
+	Slpi					
+	Smyd5					
+	Sncg					
+	Spon1					
+	Stab1					
+	Sumo2					
+	Swap70					
+	Syk					
+	Tagln					
+	Tagln2					
+	Tax1bp3					
+	Tgfbi					
+	Thbd					
+	Tor3a					
+	Tpm1					
+	Tpm1					
+	Tpm2					
+	Tpm4					
+	Tppp3					
+	Tprgl					
+	Trf					
+	Trim21					
+	Twf2					
+	Txndc5					
+	Uba7					
+	Ubash3b					
+	Ube2l6					
+	Unc119					
+	Upp1					
+	Vars					
+	Vasp					
+	Vat1					
+	Vav1					
+	Vcam1					
+	Vim					
+	Vps25					
+	Wdfy4					
+	Wfdc2					
+	Xdh					
+	Ywhaq					

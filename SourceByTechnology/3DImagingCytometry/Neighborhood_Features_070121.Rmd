@@ -1,0 +1,689 @@
+---
+title: "Calculating Neighborhood Features"
+author: "Seth Winfree"
+date: "3/18/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(umap)
+library(pastecs)
+library(ggplot2)
+library(RColorBrewer)
+library(purrr)
+library(cluster)
+library(cowplot)
+library(dplyr)
+library("mstknnclust")
+library(RANN)
+library(Rtsne)
+
+library(igraph)
+library(FNN)
+
+library("uwot")
+library("Hmisc")
+library(corrplot)
+
+library(gtools)
+library(ggraph)
+library(gdata)
+library(colorspace)
+
+library(circlize)
+library(viridis)
+
+library(pheatmap)
+
+library(reshape2)
+
+pdf.out.directory <- "C:/Users/winfrees/OneDrive - Indiana University/Projects/KPMP/Collaborations/Injury Atlas Paper/Plots/"
+
+setwd("C:/Users/winfrees/Desktop/NeighborhoodAnalysis_032521/NeighborhoodCSVs")
+
+
+neighborhood.classes.v1 <- c("MPO", "CD68", "CD3",  "Vessels", "VB", "Glomeruli",  "PT","DTL","mTAL", "cTAL",  "DCTCNT", "CD","Altered")
+
+neighborhood.classes <- c("MPO", "CD68", "CD3",  "Glom", "Vess", "VB",   "cTAL", "mTAL",    "PT","DTL","DCTCNT", "CD","Alt")
+
+cols <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+
+mypalette <- colorRampPalette(cols)(25)
+mypalette_13 <- colorRampPalette(cols)(13) 
+
+```
+
+## Introduction
+
+Class structure:
+
+
+Class structure (v1):
+
+
+
+
+Class#      	Structure/ID       	Gates                                       	ROI
+
+0	      	Neutrophils		        "MPO" AND "+lo AQP and THP"                     NA
+1	      	Macrophages		        "CD68" AND "+lo AQP and THP"                    NA
+2	      	T-cells			         "CD3" AND "+lo AQP and THP"                     NA
+3	      	Glomeruli	          	"All"                                    	"Gloms"
+4	      	Vessel			        "FActin(hi)"                                    "Vessel" in cortex
+5		     Vascular Bundle		"FActin(hi)" 					"Vessel" in medulla
+6	      	cTAL		            	"THP" AND "phall lo" in cortex                  cortex when combined
+7	      	mTAL		            	"THP" AND "phall lo" in medulla			medulla/split by analysis 
+8	      	PT			              "AQP1" AND "phall lo" in cortex                 cortex when combined
+9	   	    DTL		              	"AQP1" AND "phall lo" in medulla		medulla/split by analysis     
+10       	DCT/CNT/CD		        "All"                                           "CD/DCT"  
+11		    CD			              "All"						"CD" in medulla             
+12		    Altered			          "All"                                           "fibrosis/disrupted"
+13		    Not determined		    NA						NA
+
+
+
+
+#Loading and Preprocessing Datasets
+
+```{r, preprocessing all neighborhoods}
+
+sample.list.062321 <- c("19-0001", "19-0002", "19-0003", "19-0004", "20-0007", "20-0008", "20-0009","20-0010", "20-0011", "20-0012", "20-0039", "20-0041", "20-0042", "20-0043", "20-0044")
+
+diagnosis.list.062321 <- c("DKD", "DKD", "CKD", "AKI", "AKI", "AKI", "DKD","CKD", "DKD", "CKD", "DKD", "AKI", "AKI", "AKI","DKD")
+
+
+neighborhood.list <- list()
+neighborhood.scaled.list <- list()
+
+data <- data.frame()
+data.scaled <- data.frame()
+data.combined <- data.frame()
+import.scaled <- data.frame()
+
+setwd("C:/Users/winfrees/Desktop/NeighborhoodAnalysis_032521/NeighborhoodCSVs/version4")
+
+sample.list <- list.files(path = "C:/Users/winfrees/Desktop/NeighborhoodAnalysis_032521/NeighborhoodCSVs/version4", full.names = FALSE, recursive = FALSE)
+
+for (i in 1:length(x = sample.list )) {
+  import <- read.csv(sample.list[[i]])
+  print(paste(sample.list[[i]], dim(import)))
+  import["CSV"] = sample.list[[i]]
+  
+  neighborhood.list[[i]] <- import
+
+import <- subset(import, subset = import$Class_0_ClassFraction < 100 & import$Class_1_ClassFraction < 100 &    import$Class_2_ClassFraction < 100 & import$Class_3_ClassFraction < 100 & import$Class_4_ClassFraction < 100 &
+import$Class_5_ClassFraction < 100 & import$Class_6_ClassFraction < 100 & import$Class_7_ClassFraction < 100 &
+import$Class_8_ClassFraction < 100 & import$Class_9_ClassFraction < 100 & import$Class_10_ClassFraction < 100 &
+import$Class_11_ClassFraction < 100 & import$Class_12_ClassFraction < 100 & import$Class_13_ClassFraction < 100)
+  
+print(paste(sample.list[[i]], dim(import)))
+
+import = import[,c(1,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33)]
+import.scaled <- data.frame(import)
+import.scaled <- scale(import.scaled[,c(-1,-16)], center= TRUE, scale=TRUE)
+
+
+
+  
+  data <- smartbind(data,  data.frame(import))
+  data.scaled <- smartbind(data.scaled, import.scaled)
+  colnames(import.scaled) <- paste("Std", colnames(import.scaled), sep = "_")
+  
+  data.combined.build <-cbind(data.frame(import.scaled), data.frame(import))
+  data.combined <- smartbind(data.combined, data.combined.build)
+
+}  
+  
+data [is.na(data)] <- 0
+data.scaled [is.na(data.scaled)] <- 0
+data.combined [is.na(data.combined)] <- 0
+
+data.combined$Biopsy <- substr(data.combined$CSV, 1, 7)
+data.combined$Diagnosis <- diagnosis.list.062321[match(data.combined$Biopsy, sample.list.062321)]
+
+
+data.combined <- data.combined[,c(15,31,30,32,1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,21,22,23,24,25,26,27,28,29)]
+
+
+
+
+rm(list = c("import", "import.scaled", "data.combined.build"))
+
+#data.neighborhoods <- data.scaled
+
+```
+#Basic stats of neighborhoods
+```{r}
+total.cellsneighborhood <- rowSums(data[,c(2,3,4,5,6,7,8,9,10,11,12,13,14,15)])
+stat.desc(total.cellsneighborhood)
+
+hist(total.cellsneighborhood)
+
+```
+
+#Louvain and tSNE mapping
+
+```{r, clustering and dimensionality reduction}
+#Calculate UMAP embedding
+
+
+
+data.subset<- sample_n(data.combined, 50000)
+
+data.subset <- data.subset[!duplicated(data.subset[,c(5,6,7,8,9,10,11,12,13,14,15,16,17)]),]
+
+data.subset.embedding <- data.subset[,c(5,6,7,8,9,10,11,12,13,14,15,16,17,18)]
+
+colnames(data.subset.embedding) <- c("MPO", "CD68", "CD3",  "Glom", "Vess", "VB",   "cTAL", "mTAL",    "PT","DTL","DCTCNT", "CD","Alt","ND")
+
+
+#test_umap <- umap(scale(data.subset.embedding[,c(-14,-15)]), n_neighbors = 100, nn_method = "annoy", n_trees = 50,
+#  search_k = 5000, min_dist = 0.01, verbose = TRUE,  n_threads = 20,  n_sgd_threads = 20, fast_sgd = TRUE)
+#test_umap <- data.frame(test_umap)
+
+#data.umap.large <- data.frame(data[,-15])
+
+#data.umap.pca <- prcomp(data.scaled.subset.embedding, scale = FALSE)
+
+#Community assignment with louvain without undefined (ND)
+
+data.mat <- as.matrix(data.subset.embedding[,c(-15,-16)])
+
+info.norm = data.frame()
+k= 350 
+knn.norm <- get.knn(data.mat, k = k)
+
+knn.graph <- knn.norm
+
+knn.norm = data.frame(from = rep(1:nrow(knn.norm$nn.index), 
+    k), to = as.vector(knn.norm$nn.index), weight = 1/(1 + 
+    as.vector(knn.norm$nn.dist)))
+nw.norm = graph_from_data_frame(knn.norm, directed = FALSE)
+nw.norm = simplify(nw.norm)
+lc.norm = cluster_louvain(nw.norm)
+
+
+
+test_tsne <- Rtsne(data.subset.embedding[,c(-15,-16)],  verbose = TRUE, num_threads = 20, perplexity = 200, max_iter = 1000)
+
+
+
+kmeans <- kmeans(data.subset.embedding[,-c(14,15)], 10, iter.max = 20, nstart = 1)
+
+data.subset.embedding$louvain = as.factor(membership(lc.norm))
+
+data.subset.embedding$kmeans = as.factor(kmeans$cluster)
+
+#colnames(data.subset.embedding) <- c("MPO", "CD68", "CD3",  "Glom", "Vess", "VB",   "cTAL", "mTAL","PT","DTL","CD/DCT", "CD","Alt", "ND", "biopsy", "louvain")
+
+colnames(data.subset.embedding) <- c("MPO", "CD68", "CD3",  "Glom", "Vess", "VB",   "cTAL", "mTAL","PT","DTL","CDDCT", "CD","Alt", "ND", "louvain", "kmeans")
+
+colnames(data.subset) <- c("Object","Biopsy", "CSV", "Diagnosis", "Std_MPO", "Std_CD68", "Std_CD3",  "Std_Glom", "Std_Vess", "Std_VB","Std_cTAL", "Std_mTAL","Std_PT","Std_DTL","Std_CD/DCT", "Std_CD","Std_Alt", "Std_ND","MPO", "CD68", "CD3",  "Glom", "Vess", "VB",   "cTAL", "mTAL","PT","DTL","CD/DCT", "CD","Alt", "ND")
+
+
+#plot
+
+#mypalette_10 = mypalette[c(1,2,3,4,5,6,7,8,9,10)]
+#mypalette_13 = mypalette[c(1,2,3,4,5,6,7,8,9,10,11,12,13)]
+
+pdf(paste(pdf.out.directory,"tSNE_Louvain_062521.pdf",sep = ""), width = 6, height = 5)
+
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset.embedding$louvain)) + geom_point(size = 1, stroke = 0.1,alpha = 1) + theme_classic() + scale_color_manual(values = mypalette) + theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_biopsy_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$Biopsy)) + geom_point(size = 1, stroke = 0.1,alpha = 1) + theme_classic() + scale_color_manual(values = mypalette)+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_diagnosis_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$Diagnosis)) + geom_point(size = 1, stroke = 0.1,alpha = 1) + theme_classic() + scale_color_manual(values = c("#E69F00", "#56B4E9", "#009E73"))+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_MPO_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$MPO)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.2) + theme_classic() + scale_color_gradient(low = "gray", high = "blue")+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_CD68_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$CD68)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.2) + theme_classic() + scale_color_gradient(low = "gray", high = "blue")+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_CD3_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$CD3)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.2) + theme_classic() + scale_color_gradient(low = "gray", high = "blue")+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_Glom_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$Glom)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.2) + theme_classic() + scale_color_gradient(low = "gray", high = "blue")+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_Vess_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$Vess)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.2) + theme_classic() + scale_color_gradient(low = "gray", high = "blue")+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_VB_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$VB)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.2) + theme_classic() + scale_color_gradient(low = "gray", high = "blue")+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_PT_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$PT)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.2) + theme_classic() + scale_color_gradient(low = "gray", high = "blue")+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_DTL_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$DTL)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.2) + theme_classic() + scale_color_gradient(low = "gray", high = "blue")+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_mTAL_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$mTAL)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.2) + theme_classic() + scale_color_gradient(low = "gray", high = "blue")+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_cTAL_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$cTAL)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.2) + theme_classic() + scale_color_gradient(low = "gray", high = "blue")+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_DCTCNTCD_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$`CD/DCT`)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.2) + theme_classic() + scale_color_gradient(low = "gray", high = "blue")+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_CD_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$CD)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.2) + theme_classic() + scale_color_gradient(low = "gray", high = "blue")+ theme(legend.title=element_blank())
+dev.off()
+
+pdf(paste(pdf.out.directory,"tSNE_Alt_062521.pdf",sep = ""), width = 6, height = 5)
+ggplot(data.frame(test_tsne$Y), aes(x = X1, y = X2, colour = data.subset$Alt)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.2) + theme_classic() + scale_color_gradient(low = "gray", high = "blue") + theme(legend.title=element_blank())
+dev.off()
+```
+
+
+
+
+
+#Bar plots of celltypes by neighborhood cluster
+
+```{r}
+
+
+neighborhoods <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14)
+
+data.named.stackedbar <- data.subset[,c(19,20,21,22,23,24,25,26,27,28,29,30,31)]
+data.named.stackedbar$louvain <- data.subset.embedding$louvain
+
+data.size <- dim(data.named.stackedbar)
+
+colnames(data.named.stackedbar) <- c("MPO", "CD68", "CD3",  "Glom", "Vess", "VB",   "cTAL", "mTAL","PT","DTL","CDDCT", "CD","Alt", "louvain")
+
+mat <- matrix(nrow = length(neighborhoods), ncol = data.size[2]-1)
+mat [is.na(mat)] <- 0
+
+for(i in 1:length(neighborhoods)) {
+  
+data.named.neighborhood <- subset(data.named.stackedbar, data.named.stackedbar$louvain == neighborhoods[[i]])
+
+data.size <- dim(data.named.neighborhood)
+
+#pb = txtProgressBar(min = 0, max = data.size[1], initial = 0, style = 3) 
+
+  for(j in 1:(data.size[2]-1)) {
+    for(k in 1:data.size[1]) {
+      mat[i,j] <- mat[i,j] + data.named.neighborhood[k,j]
+
+    }
+  } 
+ #     setTxtProgressBar(pb,i, title = paste("Progress (%):" , 100*(i/length(neighborhoods))))
+
+for(l in 1:(data.size[2]-1)) {
+  
+  mat[i,l] <- mat[i,l]/data.size[1]
+  
+}
+
+
+}
+#close(pb)
+
+ 
+
+
+
+mycolors = c( "#E69F00", "#ACA75D", "#72AFBA", "#44AFD1" ,"#22A6A2"  ,"#60BA5F","#009E73", "#C0D64B", "#609F85", "#556A6A", "#AA6123", "#D36321" ,"#CF6E64", "#CC79A7","#0072B2","#C0CD58"  )
+
+mat <- as.data.frame(mat)
+colnames(mat) <- c("MPO", "CD68", "CD3",  "Glom", "Vess", "VB",   "cTAL", "mTAL","PT","DTL","CDDCT", "CD","Alt")
+neighborhoods <- as.factor(neighborhoods)
+mat <- cbind(mat, neighborhoods)
+mat <- melt(mat)
+pdf(paste(pdf.out.directory,"Clusters_StackedBar_062521.pdf",sep = ""), width = 7, height =5)
+ggplot(mat, aes(fill = variable, x = neighborhoods, y = value)) + 
+  geom_bar(position="fill", stat="identity", colour = "black") + scale_fill_manual(values = mypalette_13) + theme_minimal()
+dev.off()
+```
+
+#Subgate cTAL
+
+```{r}
+
+data.named.neighborhood.cTAL <- subset(data.subset, data.named.stackedbar$louvain == 8)
+
+data.mat.cTAL <- as.matrix(data.named.neighborhood.cTAL[,c(5,6,7,8,9,10,11,12,13,14,15,16,17)])
+
+info.norm.cTAL = data.frame()
+k= 600 
+knn.norm.cTAL <- get.knn(data.mat.cTAL, k = k)
+
+knn.graph.cTAL <- knn.norm.cTAL
+
+knn.norm.cTAL = data.frame(from = rep(1:nrow(knn.norm.cTAL$nn.index), 
+    k), to = as.vector(knn.norm.cTAL$nn.index), weight = 1/(1 + 
+    as.vector(knn.norm.cTAL$nn.dist)))
+nw.norm.cTAL = graph_from_data_frame(knn.norm.cTAL, directed = FALSE)
+nw.norm.cTAL = simplify(nw.norm.cTAL)
+lc.norm.cTAL = cluster_louvain(nw.norm.cTAL)
+
+
+data.named.neighborhood.cTAL$louvain = as.factor(membership(lc.norm.cTAL))
+
+test_tsne.ctal <- Rtsne(data.mat.cTAL,  verbose = TRUE, num_threads = 20, perplexity = 200, max_iter = 1000)
+
+pdf(paste(pdf.out.directory,"cTALSubgate_clusters_higha__062521.pdf",sep = ""), width = 5, height = 5)
+
+ggplot(data.frame(test_tsne.ctal$Y), aes(x = X1, y = X2, colour = data.named.neighborhood.cTAL$louvain)) + geom_point(size = 2, stroke = 0.1,alpha = 1) + theme_classic() + scale_color_manual(values = mypalette)+ theme(legend.title=element_blank())
+
+dev.off()
+
+pdf(paste(pdf.out.directory,"cTALSubgate_Alt_062521.pdf",sep = ""), width = 5, height = 5)
+
+ggplot(data.frame(test_tsne.ctal$Y), aes(x = X1, y = X2, colour = data.named.neighborhood.cTAL$Alt)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.5) + theme_classic() + scale_color_gradient(low = "gray", high = "blue")+ theme(legend.title=element_blank())
+
+dev.off()
+
+pdf(paste(pdf.out.directory,"cTALSubgate_cTAL_062521.pdf",sep = ""), width = 5, height = 5)
+
+ggplot(data.frame(test_tsne.ctal$Y), aes(x = X1, y = X2, colour = data.named.neighborhood.cTAL$cTAL)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.5) + theme_classic() + scale_color_gradient(low = "gray", high = "blue") + theme(legend.title=element_blank())
+
+dev.off()
+
+pdf(paste(pdf.out.directory,"cTALSubgate_CD3_062521.pdf",sep = ""), width = 5, height = 5)
+
+ggplot(data.frame(test_tsne.ctal$Y), aes(x = X1, y = X2, colour = data.named.neighborhood.cTAL$CD3)) + geom_point(size = 2, stroke = 0.1, shape = 16, alpha = 0.5) + theme_classic() + scale_color_gradient(low = "gray", high = "blue") + theme(legend.title=element_blank())
+
+dev.off()
+```
+#cTAL subgate stacked bar plot
+
+```{r}
+
+neighborhoods.ctal <- c(1,2,3,4)
+
+data.named.stackedbar.ctal <- data.named.neighborhood.cTAL[,c(19,20,21,22,23,24,25,26,27,28,29,30,31)]
+data.named.stackedbar.ctal$louvain <- data.named.neighborhood.cTAL$louvain
+
+colnames(data.named.stackedbar.ctal) <- c("MPO", "CD68", "CD3",  "Glom", "Vess", "VB",   "cTAL", "mTAL","PT","DTL","CDDCT", "CD","Alt", "louvain")
+
+data.size.ctal <- dim(data.named.stackedbar.ctal)
+
+mat.ctal <- matrix(nrow = length(neighborhoods.ctal), ncol = data.size.ctal[2]-1)
+mat.ctal [is.na(mat.ctal)] <- 0
+
+
+
+for(i in 1:length(neighborhoods.ctal)) {
+  
+data.named.neighborhood.ctal <- subset(data.named.stackedbar.ctal, data.named.stackedbar.ctal$louvain == neighborhoods.ctal[[i]])
+
+data.size.ctal <- dim(data.named.neighborhood.ctal)
+
+#pb = txtProgressBar(min = 0, max = data.size[1], initial = 0, style = 3) 
+
+  for(j in 1:(data.size.ctal[2]-1)) {
+    for(k in 1:data.size.ctal[1]) {
+      mat.ctal[i,j] <- mat.ctal[i,j] + data.named.neighborhood.ctal[k,j]
+
+    }
+  } 
+ #     setTxtProgressBar(pb,i, title = paste("Progress (%):" , 100*(i/length(neighborhoods))))
+
+for(l in 1:(data.size.ctal[2]-1)) {
+  
+  mat.ctal[i,l] <- mat.ctal[i,l]/data.size.ctal[1]
+  
+}
+
+
+}
+#close(pb)
+
+ 
+
+
+
+
+
+mat.ctal <- as.data.frame(mat.ctal)
+colnames(mat.ctal) <- c("MPO", "CD68", "CD3",  "Glom", "Vess", "VB",   "cTAL", "mTAL","PT","DTL","CDDCT", "CD","Alt")
+neighborhoods.ctal <- as.factor(neighborhoods.ctal)
+mat.ctal <- cbind(mat.ctal, neighborhoods.ctal)
+mat.ctal <- melt(mat.ctal)
+pdf(paste(pdf.out.directory,"cTALSubgate_clusters_StackedBar_062521.pdf",sep = ""), width = 5, height = 5)
+ggplot(mat.ctal, aes(fill = variable, x = neighborhoods.ctal, y = value)) + 
+  geom_bar(position="fill", stat="identity", colour = "black") + scale_fill_manual(values = mypalette_13) + theme_minimal()
+dev.off()
+```
+
+
+#Chord plots and network graphs all biospies
+```{r, generating circle plots and networks maps}
+
+
+data.named <- data[,c(-1, -15, -16)]
+colnames(data.named) <- c("MPO", "CD68", "CD3",  "Glom", "Vess", "VB",   "cTAL", "mTAL","PT","DTL","CDDCT", "CD","Alt")
+
+plot.names.root <- c("MPO", "CD68", "CD3",  "Glom", "Vess", "VB",   "cTAL", "mTAL","PT","DTL","CDDCT", "CD","Alt", "All")
+
+
+#data.subset.chord <- sample_n(data[,c(-1, -15, -16)], 50000)
+
+data.subset.chord <- data[,c(-1, -15, -16)]
+
+colnames(data.subset.chord) <- c("MPO", "CD68", "CD3",  "Glom", "Vess", "VB",   "cTAL", "mTAL","PT","DTL","CDDCT", "CD","Alt")
+
+weight.list <- c(20000, 20000,50000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,50000)
+
+data.subset.chord.list <- list(14)
+
+data.subset.chord.MPO <- subset(data.named, subset = data.named$MPO > 0)
+data.subset.chord.list[[1]] <-  data.subset.chord.MPO
+data.subset.chord.CD68 <- subset(data.named, subset = data.named$CD68 > 0)
+data.subset.chord.list[[2]] <-  data.subset.chord.CD68
+data.subset.chord.CD3 <- subset(data.named, subset = data.named$CD3 > 0)
+data.subset.chord.list[[3]] <-  data.subset.chord.CD3
+data.subset.chord.Glom <- subset(data.named, subset = data.named$Glom > 0)
+data.subset.chord.list[[4]] <-  data.subset.chord.Glom
+data.subset.chord.Vess <- subset(data.named, subset = data.named$Vess > 0)
+data.subset.chord.list[[5]] <-  data.subset.chord.Vess
+data.subset.chord.VB <- subset(data.named, subset = data.named$VB > 0)
+data.subset.chord.list[[6]] <-  data.subset.chord.VB
+data.subset.chord.cTAL <- subset(data.named, subset = data.named$cTAL > 0)
+data.subset.chord.list[[7]] <-  data.subset.chord.cTAL
+data.subset.chord.mTAL <- subset(data.named, subset = data.named$mTAL > 0)
+data.subset.chord.list[[8]] <-  data.subset.chord.mTAL
+data.subset.chord.PT <- subset(data.named, subset = data.named$PT > 0)
+data.subset.chord.list[[9]] <-  data.subset.chord.PT
+data.subset.chord.DTL <- subset(data.named, subset = data.named$DTL > 0)
+data.subset.chord.list[[10]] <-  data.subset.chord.DTL
+data.subset.chord.CDDCT <- subset(data.named, subset = data.named$CDDCT > 0)
+data.subset.chord.list[[11]] <-  data.subset.chord.CDDCT
+data.subset.chord.CD <- subset(data.named, subset = data.named$CD > 0)
+data.subset.chord.list[[12]] <-  data.subset.chord.CD
+data.subset.chord.Alt <- subset(data.named, subset = data.named$Alt > 0)
+data.subset.chord.list[[13]] <-  data.subset.chord.Alt
+data.subset.chord.list[[14]] <-  data.subset.chord
+
+for(l in 1 : length(data.subset.chord.list)){
+
+
+
+
+data.subset.chord.item <- data.frame(data.subset.chord.list[l])
+
+data.subset.chord.item <- sample_n(data.subset.chord.item, 10000)
+
+data.size <- dim(data.subset.chord.item)
+ 
+pb = txtProgressBar(min = 0, max = data.size[1], initial = 0, style = 3) 
+
+adj.mat <- matrix(nrow = data.size[2], ncol = data.size[2])
+adj.mat [is.na(adj.mat)] <- 0
+
+for(i in 1:data.size[1]) {
+  for(j in 1:data.size[2]) {
+    for(k in 1:data.size[2]) {
+      adj.mat[j,k] <- adj.mat[j,k] + data.subset.chord.item[i,j] * data.subset.chord.item[i,k]
+      setTxtProgressBar(pb,i, title = paste("Progress (%):" , 100*(i/data.size[1])))
+    }
+  }  
+}
+
+close(pb)
+
+#
+
+graph.adj = graph_from_adjacency_matrix(adj.mat, weighted = TRUE)
+graph.adj = simplify(graph.adj, edge.attr.comb="sum")
+
+
+graph.adj.undirected = as.undirected(graph.adj)
+E(graph.adj.undirected)$width <- 1+E(graph.adj.undirected)$weight/10000
+V(graph.adj.undirected)$label <- NA
+
+
+####Chord plot
+
+circos.clear()
+circos.par(start.degree = 90, gap.degree = 4, track.margin = c(-0.1, 0.1), points.overflow.warning = FALSE)
+par(mar = rep(0, 4))
+
+# color palette
+
+
+# Base plot
+
+df = data.frame(adj.mat)
+diag(df) <- 0
+row.names(df) <- neighborhood.classes
+colnames(df) <- neighborhood.classes
+
+grid.col = c(MPO =mypalette_13[1], CD68 =mypalette_13[2], CD3 =mypalette_13[3],  
+             Glom =mypalette_13[4], Vess =mypalette_13[5], VB =mypalette_13[6],   
+             cTAL =mypalette_13[7], mTAL =mypalette_13[8], PT =mypalette_13[9],
+             DTL =mypalette_13[10], DCTCNT =mypalette_13[11], CD =mypalette_13[12],
+             Alt=mypalette_13[13])
+pdf(paste(pdf.out.directory, paste(plot.names.root[l],"_chorddiagram_062521.pdf",sep = ""), sep = ""), width = 5, height = 9)
+
+chordDiagram(
+  x = as.matrix(df), 
+  directional = 2,
+  link.sort = TRUE, 
+  link.largest.ontop = TRUE,
+  symmetric = TRUE,
+  self.link = 2,
+  annotationTrack = c("grid"), 
+  annotationTrackHeight = mm_h(5),
+  grid.col = grid.col,
+  transparency = 0.5
+   )
+
+dev.off()
+coords2 <- layout_in_circle(graph.adj.undirected)
+
+pdf(paste(pdf.out.directory, paste(plot.names.root[l],"_networks_062521.pdf",sep = ""), sep = ""), width = 5, height = 9)
+
+plot(graph.adj.undirected,layout = as.matrix(coords2), vertex.color=mypalette_13,  edge.width=1+E(graph.adj.undirected)$weight/weight.list[[l]], vertex.label=NA)
+
+dev.off()
+}
+```
+#Correlation plots all biospies
+```{r, correlation plots}
+
+neighborhood.classes.trimmed <- c("MPO", "CD68", "CD3",  "Glom",  "cTAL", "mTAL","PT","Alt")
+
+data.rename <- data[,c(2,3,4,5,8,9,10,14)]
+colnames(data.rename) <- neighborhood.classes.trimmed
+
+#data.rename <- data.rename[,-c(1,2,3)]
+
+data.rcor = rcorr(as.matrix(data.rename))
+data.cor = cor(as.matrix(data.rename))
+
+res1 <- cor.mtest(data.rename, conf.level = .95)
+colors = brewer.pal(n=10, name = "RdYlGn")
+
+pdf(paste(pdf.out.directory,"Corr_plor_062521.pdf",sep = ""), width = 6, height = 5)
+
+corrplot(data.cor, type = "upper", p.mat = res1$p, sig.level = 0.05, insig = "blank", diag = FALSE, col = colors, tl.pos='n')
+
+dev.off()
+
+corrplot.mixed(data.cor, tl.col = "black",  sig.level = 0.05, insig= "blank", p.mat = res1$p, upper.col = colors, lower.col = colors)
+
+
+
+```
+
+#distrubition of neighborhoods by biopsy
+
+```{r}
+
+biopsies <- sample.list.062321
+
+neighborhoods.names <- c("N1", "N2", "N3",  "N4", "N5", "N6",   "N7", "N8","N9","N10","N11", "N12","N13", "N14")
+
+data.named.neighborhood.distribution <- data.subset[,c(2,19,20,21,22,23,24,25,26,27,28,29,30,31)]
+data.named.neighborhood.distribution$louvain <- data.subset.embedding$louvain
+
+data.size <- dim(data.named.neighborhood.distribution)
+
+
+
+mat.neighbors <- matrix(nrow = length(biopsies), ncol = length(neighborhoods.names))
+mat.neighbors [is.na(mat.neighbors)] <- 0
+
+for(i in 1:length(biopsies)) {
+  
+data.named.biopsy <- subset(data.named.neighborhood.distribution, data.named.neighborhood.distribution$Biopsy == biopsies[[i]])
+
+
+
+data.size <- dim(data.named.biopsy)
+
+#pb = txtProgressBar(min = 0, max = data.size[1], initial = 0, style = 3) 
+
+  for(j in 1:(data.size[2])) {
+    for(k in 1:(data.size[1]))
+    
+      if(j == as.numeric(data.named.biopsy$louvain[k])){mat.neighbors[i,j] <- mat.neighbors[i,j] + 1}
+     
+
+    
+  } 
+ #     setTxtProgressBar(pb,i, title = paste("Progress (%):" , 100*(i/length(neighborhoods))))
+
+#for(l in 1:(data.size[2]-1)) {
+  
+#  mat.neighbors[i,l] <- mat.neighbors[i,l]/data.size[1]
+  
+#}
+
+
+}
+
+neighborhood.distribution <- data.frame(mat.neighbors)
+colnames(neighborhood.distribution) <- neighborhoods.names
+rownames(neighborhood.distribution) <- biopsies
+
+diagnosis.colors <- as.numeric(as.factor(diagnosis.list.062321))
+colSide <- brewer.pal(9, "Set1")[diagnosis.colors]
+
+heatmap(as.matrix(neighborhood.distribution), RowSideColors = colSide, scale = "row")
+
+```
+
