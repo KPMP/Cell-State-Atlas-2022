@@ -1,0 +1,158 @@
+---
+title: "cacoa analysis updated"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(cacoa)
+library(Seurat)
+library(ggplot2)
+library(pagoda2)
+library(cowplot)
+library(Matrix)
+library(conos)
+library(dplyr)
+library(magrittr)
+library(org.Hs.eg.db)
+library(devtools)
+source("./Trajectory/util.func.R")
+```
+
+## R Markdown
+## Load data
+```{r, echo=TRUE, include=FALSE}
+AKI.CKD.sn.cao <- readRDS("./Trajectory/obj/AKI.CKD.cao.rds")
+AKI.CKD.sc.cao <- readRDS("./Trajectory/obj/AKI.CKD.cao.sc.rds")
+color.table <- read.table("./Trajectory/obj/color.table.txt", sep="\t", comment.char="!", header = T)
+```
+
+## celltype shift ranking
+```{r, echo=TRUE}
+AKI.CKD.sn.cao$plotCommonExpressionShiftMagnitudes(show.jitter=TRUE, type='box') 
+```
+
+## DE gene summary
+
+### AKI vs CKD
+```{r, echo=TRUE, fig.height=3.5, fig.width=8}
+p1 <- AKI.CKD.sn.cao$plotNumberOfDEGenes(name='deFixed', pvalue.cutoff=1e-3, p.adjust=FALSE, show.jitter=FALSE,
+                        type='bar', show.resampling.results=TRUE,
+                        show.size.dependency=TRUE, show.whiskers=FALSE) + ggtitle("sn")
+p2 <- AKI.CKD.sc.cao$plotNumberOfDEGenes(name='deFixed', pvalue.cutoff=1e-3, p.adjust=FALSE, show.jitter=FALSE,
+                        type='bar', show.resampling.results=TRUE,
+                        show.size.dependency=TRUE, show.whiskers=FALSE) + ggtitle("sc")
+cowplot::plot_grid(plotlist=list(p1, p2), nrow=1)
+```
+
+### AKI vs CKD, integrated view - Extended figure 14f
+```{r, echo=TRUE, fig.height=3.5, fig.width=5}
+cao <- list(AKI.CKD.sc.cao, AKI.CKD.sn.cao)
+pallete <- setNames(color.table$subclass.l1_color, color.table$subclass.l1_label)
+  
+plotDEsummary(cao, pvalue.cutoff=1e-8, p.adjust=TRUE, show.jitter=FALSE, show.regression=F,
+              palette=pallete) + ggtitle("AKI vs CKD, integrated")
+```
+
+## Function Analysis
+### AKI vs CKD
+```{r, echo=TRUE}
+library(org.Hs.eg.db)
+org <- org.Hs.eg.db
+AKI.CKD.sn.cao$estimateOntology(type="GO", org.db=org, n.top.genes=1000)
+AKI.CKD.sn.cao$plotOntologyHeatmap(type = "GO", genes = "up", n=20)
+```
+
+```{r, echo=TRUE}
+AKI.CKD.sc.cao$estimateOntology(type="GO", org.db=org, n.top.genes=1000)
+AKI.CKD.sc.cao$plotOntologyHeatmap(type = "GO", genes = "up", n=20)
+```
+```{r, echo=TRUE}
+# integrated view - Extended Data Figure 14f
+plotOntologyHeat(cao, up.qantile=0.9)
+```
+
+
+### print major celltype DE tables
+```{r, echo=FALSE}
+celltypes <- names(AKI.CKD.sn.cao$test.results$de)
+p.cutoff <- 1e-3
+out.dir <- "/home/qiwenhu/hubmap/kidney/objects/revision/cao"
+
+AKI.CKD.de <- lapply(celltypes, function(r){
+  de <- AKI.CKD.sn.cao$test.results$de[[r]]$res
+  de <- de[de$padj < p.cutoff, ]
+  de$celltype <- r
+  de$gene <- rownames(de)
+  de
+}) %>% dplyr::bind_rows()
+write.table(AKI.CKD.de, file=file.path(out.dir, "AKI.CKD.celltype.de.txt"), sep="\t", col.names=T, row.names=F, quote=F)
+
+CKD.ref.de <- lapply(celltypes, function(r){
+  de <- CKD.ref.sn.cao$test.results$de[[r]]$res
+  de <- de[de$padj < p.cutoff, ]
+  de$celltype <- r
+  de$gene <- rownames(de)
+  de
+}) %>% dplyr::bind_rows()
+write.table(CKD.ref.de, file=file.path(out.dir, "CKD.ref.celltype.de.txt"), sep="\t", col.names=T, row.names=F, quote=F)
+
+```
+
+
+### AKI CKD integrated DE genelist
+```{r, echo=FALSE}
+celltypes <- names(AKI.CKD.sn.cao$test.results$de)
+
+AKI.CKD.de.sn <- lapply(celltypes, function(r){
+  de <- AKI.CKD.sn.cao$test.results$de[[r]]$res
+  de <- de[de$padj < p.cutoff, ]
+  de$celltype <- r
+  de$gene <- rownames(de)
+  de
+}) %>% dplyr::bind_rows()
+
+AKI.CKD.de.sc <- lapply(celltypes, function(r){
+  de <- AKI.CKD.sn.cao$test.results$de[[r]]$res
+  de <- de[de$padj < p.cutoff, ]
+  de$celltype <- r
+  de$gene <- rownames(de)
+  de
+}) %>% dplyr::bind_rows()
+
+## merge
+AKI.CKD.de.summary <- lapply(celltypes, function(r){
+  rbind(AKI.CKD.de.sn[AKI.CKD.de.sn$celltype == r, ], AKI.CKD.de.sc[AKI.CKD.de.sc$celltype == r, ])
+}) %>% dplyr::bind_rows()
+write.table(AKI.CKD.de.summary, file=file.path(out.dir, "AKI.CKD.celltype.de.summary.txt"), sep="\t", col.names=T, row.names=F, quote=F)
+```
+
+### pull out GO enriched list
+```{r, echo=FALSE}
+celltypes <- names(AKI.CKD.sn.cao$test.results$GO$res)
+AKI.CKD.sn.go <- lapply(celltypes, function(r){
+  #print(r)
+  t <- as.data.frame(AKI.CKD.sn.cao$test.results$GO$res[[r]]$BP$up)
+  if(nrow(t)>0){
+    t$celltype <- r
+    t 
+  }
+}) %>% plyr::compact() %>% dplyr::bind_rows()
+
+AKI.CKD.sc.go <- lapply(celltypes, function(r){
+  #print(r)
+  t <- as.data.frame(AKI.CKD.sc.cao$test.results$GO$res[[r]]$BP$up)
+  if(nrow(t)>0){
+    t$celltype <- r
+    t 
+  }
+}) %>% plyr::compact() %>% dplyr::bind_rows()
+
+## merge
+AKI.CKD.go.summary <- lapply(celltypes, function(r){
+  rbind(AKI.CKD.sn.go[AKI.CKD.sn.go$celltype == r, ], AKI.CKD.sc.go[AKI.CKD.sc.go$celltype == r, ])
+}) %>% dplyr::bind_rows()
+write.table(AKI.CKD.go.summary, file=file.path(out.dir, "AKI.CKD.celltype.GO.summary.txt"), sep="\t", col.names=T, row.names=F, quote=F)
+```
+
+

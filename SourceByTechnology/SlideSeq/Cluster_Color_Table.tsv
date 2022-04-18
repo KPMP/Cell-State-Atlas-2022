@@ -1,0 +1,101 @@
+clusters_label	clusters_id	clusters_color	subclass.full	subclass.l3_label	subclass.l3_id	subclass.l3_color	subclass.l2_label	subclass.l2_id	subclass.l2_color	subclass.l1_label	subclass.l1_id	subclass.l1_color	class_label	class_id	class_color		snDrop_predicted_subclass_label	snDrop_predicted_subclass_id	snDrop_predicted_subclass_color
+1	1	#E6ACAC	Podocyte	POD	1	#E6ACAC	POD	1	#E6ACAC	POD	1	#E6ACAC	epithelial cells	1	#36B366		POD	1	#E6ACAC
+2	2	#B36F6B	Degenerative Podocyte	dPOD	2	#B3716B	dPOD	2	#B3716B	POD	1	#E6ACAC	epithelial cells	1	#36B366		PEC	2	#804539
+3	3	#804039	Parietal Epithelial Cell	PEC	3	#804439	PEC	3	#804439	PEC	2	#804539	epithelial cells	1	#36B366		PT	3	#E6A267
+4	4	#E65D45	Proximal Tubule Epithelial Cell Segment 1	PT-S1	4	#E66A45	PT-S1	4	#E66A45	PT	3	#E6A267	epithelial cells	1	#36B366		DTL	4	#B39C50
+5	5	#B38F86	Proximal Tubule Epithelial Cell Segment 1	PT-S1	4	#E66A45	PT-S1	4	#E66A45	PT	3	#E6A267	epithelial cells	1	#36B366		ATL	5	#7A8039
+6	6	#80594D	Proximal Tubule Epithelial Cell Segment 2	PT-S2	5	#B39486	PT-S2	5	#B39486	PT	3	#E6A267	epithelial cells	1	#36B366		TAL	6	#B5E667
+7	7	#E68D67	Proximal Tubule Epithelial Cell Segment 3	PT-S3	6	#80604D	PT-S3	6	#80604D	PT	3	#E6A267	epithelial cells	1	#36B366		DCT	7	#3B8026
+8	8	#B36236	Adaptive / Maladaptive / Repairing Proximal Tubule Epithelial Cell	aPT	7	#E6A267	aPT	7	#E6A267	PT	3	#E6A267	epithelial cells	1	#36B366		CNT	8	#45E651
+9	9	#806C60	Adaptive / Maladaptive / Repairing Proximal Tubule Epithelial Cell	aPT	7	#E6A267	aPT	7	#E6A267	PT	3	#E6A267	epithelial cells	1	#36B366		PC	9	#36B366
+10	10	#E6B38A	Adaptive / Maladaptive / Repairing Proximal Tubule Epithelial Cell	aPT	7	#E6A267	aPT	7	#E6A267	PT	3	#E6A267	epithelial cells	1	#36B366		IC-A	10	#ACE6D8
+11	11	#B38250	Adaptive / Maladaptive / Repairing Proximal Tubule Epithelial Cell	aPT	7	#E6A267	aPT	7	#E6A267	PT	3	#E6A267	epithelial cells	1	#36B366		IC-B	11	#4D7880
+12	12	#805826	Cycling Proximal Tubule Epithelial Cell	cycPT	8	#B37936	cycPT	8	#B37936	PT	3	#E6A267	epithelial cells	1	#36B366		EC-GC	12	#368CB3
+13	13	#E6CFAC	Degenerative Proximal Tubule Epithelial Cell	dPT	9	#807360	dPT	9	#807360	PT	3	#E6A267	epithelial cells	1	#36B366		EC-AEA	13	#607380
+14	14	#B39A6B	Degenerative Proximal Tubule Epithelial Cell	dPT	9	#807360	dPT	9	#807360	PT	3	#E6A267	epithelial cells	1	#36B366		EC-AVR	14	#ACBEE6
+15	15	#806B39	Degenerative Proximal Tubule Epithelial Cell	dPT	9	#807360	dPT	9	#807360	PT	3	#E6A267	epithelial cells	1	#36B366		EC-LYM	15	#4551E6
+16	16	#E6BE45	Degenerative Proximal Tubule Epithelial Cell	dPT	9	#807360	dPT	9	#807360	PT	3	#E6A267	epithelial cells	1	#36B366		MC	16	#8686B3
+17	17	#B3AA86	Degenerative Proximal Tubule Epithelial Cell	dPT	9	#807360	dPT	9	#807360	PT	3	#E6A267	epithelial cells	1	#36B366		vSMC/P	17	#5236B3
+18	18	#80784D	Degenerative Proximal Tubule Epithelial Cell	dPT	9	#807360	dPT	9	#807360	PT	3	#E6A267	epithelial cells	1	#36B366		FIB	18	#562680
+19	19	#E6DA67	Degenerative  Proximal Tubule Epithelial Cell / Descending Thin Limb Cell	dPT/DTL	10	#E6C98A	dPT/DTL	10	#E6C98A	PT	3	#E6A267	epithelial cells	1	#36B366		MAC-R	19	#E68AC9
+20	20	#B3AD36	Descending Thin Limb Cell Type 2	DTL2	11	#B39C50	DTL2	11	#B39C50	DTL	4	#B39C50	epithelial cells	1	#36B366				
+21	21	#7F8060	Descending Thin Limb Cell Type 1	DTL1	12	#807226	DTL1	12	#807226	DTL	4	#B39C50	epithelial cells	1	#36B366				
+22	22	#E0E68A	Descending Thin Limb Cell Type 3	DTL3	13	#E6E1AC	DTL3	13	#E6E1AC	DTL	4	#B39C50	epithelial cells	1	#36B366				
+23	23	#A8B350	Degenerative Descending Thin Limb Cell Type 3	dDTL3	14	#B3B36B	dDTL3	14	#B3B36B	DTL	4	#B39C50	epithelial cells	1	#36B366				
+24	24	#718026	Ascending Thin Limb Cell	ATL	15	#7A8039	ATL	15	#7A8039	ATL	5	#7A8039	epithelial cells	1	#36B366				
+25	25	#D9E6AC	Degenerative Ascending Thin Limb Cell	dATL	16	#CDE645	dATL	16	#CDE645	ATL	5	#7A8039	epithelial cells	1	#36B366				
+26	26	#A0B36B	Adaptive / Maladaptive / Repairing Thick Ascending Limb Cell	aTAL1	17	#A8B386	aTAL1	17	#A8B386	TAL	6	#B5E667	epithelial cells	1	#36B366				
+27	27	#6A8039	Adaptive / Maladaptive / Repairing Thick Ascending Limb Cell	aTAL1	17	#A8B386	aTAL1	17	#A8B386	TAL	6	#B5E667	epithelial cells	1	#36B366				
+28	28	#ABE645	Adaptive / Maladaptive / Repairing Thick Ascending Limb Cell	aTAL2	18	#70804D	aTAL2	18	#70804D	TAL	6	#B5E667	epithelial cells	1	#36B366				
+29	29	#A0B386	Adaptive / Maladaptive / Repairing Thick Ascending Limb Cell	aTAL2	18	#70804D	aTAL2	18	#70804D	TAL	6	#B5E667	epithelial cells	1	#36B366				
+30	30	#68804D	Adaptive / Maladaptive / Repairing Thick Ascending Limb Cell	aTAL1	17	#A8B386	aTAL1	17	#A8B386	TAL	6	#B5E667	epithelial cells	1	#36B366				
+31	31	#A5E667	Medullary Thick Ascending Limb Cell	M-TAL	19	#B5E667	M-TAL	19	#B5E667	TAL	6	#B5E667	epithelial cells	1	#36B366				
+32	32	#6CB336	Degenerative Medullary Thick Ascending Limb Cell	dM-TAL	20	#79B336	dM-TAL	20	#79B336	TAL	6	#B5E667	epithelial cells	1	#36B366				
+33	33	#6C8060	Degenerative Medullary Thick Ascending Limb Cell	dM-TAL	20	#79B336	dM-TAL	20	#79B336	TAL	6	#B5E667	epithelial cells	1	#36B366				
+34	34	#A9E68A	Degenerative Medullary Thick Ascending Limb Cell	dM-TAL	20	#79B336	dM-TAL	20	#79B336	TAL	6	#B5E667	epithelial cells	1	#36B366				
+35	35	#6CB350	Degenerative Medullary Thick Ascending Limb Cell	dM-TAL	20	#79B336	dM-TAL	20	#79B336	TAL	6	#B5E667	epithelial cells	1	#36B366				
+36	36	#3B8026	Cortical Thick Ascending Limb Cell	C-TAL	21	#6E8060	C-TAL	21	#6E8060	TAL	6	#B5E667	epithelial cells	1	#36B366				
+37	37	#B7E6AC	Cortical Thick Ascending Limb Cell	C-TAL	21	#6E8060	C-TAL	21	#6E8060	TAL	6	#B5E667	epithelial cells	1	#36B366				
+38	38	#75B36B	Degenerative Cortical Thick Ascending Limb Cell	dC-TAL	22	#ADE68A	dC-TAL	22	#ADE68A	TAL	6	#B5E667	epithelial cells	1	#36B366				
+39	39	#3F8039	Macula Densa Cell	MD	23	#6FB350	MD	23	#6FB350	TAL	6	#B5E667	epithelial cells	1	#36B366				
+40	40	#4AE645	Distal Convoluted Tubule Cell Type 1	DCT1	24	#3B8026	DCT	24	#3B8026	DCT	7	#3B8026	epithelial cells	1	#36B366				
+41	41	#86B387	Distal Convoluted Tubule Cell Type 2	DCT2	25	#B5E6AC	DCT	24	#3B8026	DCT	7	#3B8026	epithelial cells	1	#36B366				
+42	42	#4D8050	Degenerative Distal Convoluted Tubule Cell	dDCT	26	#71B36B	dDCT	25	#71B36B	DCT	7	#3B8026	epithelial cells	1	#36B366				
+43	43	#67E676	Cycling Distal Convoluted Tubule Cell	cycDCT	27	#398039	cycDCT	26	#398039	DCT	7	#3B8026	epithelial cells	1	#36B366				
+44	44	#36B34B	Connecting Tubule Cell	CNT	28	#45E651	CNT	27	#45E651	CNT	8	#45E651	epithelial cells	1	#36B366				
+45	45	#608067	Connecting Tubule Principal Cell	CNT-PC	29	#86B38D	CNT	27	#45E651	CNT	8	#45E651	epithelial cells	1	#36B366				
+46	46	#8AE6A2	Degenerative Connecting Tubule Cell	dCNT	30	#4D8058	dCNT	28	#4D8058	CNT	8	#45E651	epithelial cells	1	#36B366				
+47	47	#50B370	Cycling Connecting Tubule Cell	cycCNT	31	#67E68E	cycCNT	29	#67E68E	CNT	8	#45E651	epithelial cells	1	#36B366				
+48	48	#268047	Cortical Collecting Duct Principal Cell	CCD-PC	32	#36B366	C-PC	30	#36B366	PC	9	#36B366	epithelial cells	1	#36B366				
+49	49	#ACE6C4	Outer Medullary Collecting Duct Principal Cell	OMCD-PC	33	#60806E	M-PC	31	#60806E	PC	9	#36B366	epithelial cells	1	#36B366				
+50	50	#6BB38D	Degenerative Outer Medullary Collecting Duct Principal Cell	dOMCD-PC	34	#8AE6BB	dM-PC	32	#8AE6BB	PC	9	#36B366	epithelial cells	1	#36B366				
+51	51	#39805E	Degenerative Outer Medullary Collecting Duct Principal Cell	dOMCD-PC	34	#8AE6BB	dM-PC	32	#8AE6BB	PC	9	#36B366	epithelial cells	1	#36B366				
+52	52	#45E6A1	Inner Medullary Collecting Duct Cell	IMCD	35	#50B38D	IMCD	33	#50B38D	PC	9	#36B366	epithelial cells	1	#36B366				
+53	53	#86B3A2	Degenerative Inner Medullary Collecting Duct Cell	dIMCD	36	#268064	dIMCD	34	#268064	PC	9	#36B366	epithelial cells	1	#36B366				
+54	54	#4D806F	Degenerative Inner Medullary Collecting Duct Cell	dIMCD	36	#268064	dIMCD	34	#268064	PC	9	#36B366	epithelial cells	1	#36B366				
+55	55	#67E6C2	Cortical Collecting Duct Intercalated Cell Type A	CCD-IC-A	37	#ACE6D8	C-IC-A	35	#ACE6D8	IC	10	#39807A	epithelial cells	1	#36B366				
+56	56	#36B396	Connecting Tubule Intercalated Cell Type A	CNT-IC-A	38	#6BB3A8	C-IC-A	35	#ACE6D8	IC	10	#39807A	epithelial cells	1	#36B366				
+57	57	#60807A	Degenerative Cortical Intercalated Cell Type A	dC-IC-A	39	#39807A	dC-IC-A	36	#39807A	IC	10	#39807A	epithelial cells	1	#36B366				
+58	58	#8AE6DA	Outer Medullary Collecting Duct Intercalated Cell Type A	OMCD-IC-A	40	#45E6E6	M-IC-A	37	#45E6E6	IC	10	#39807A	epithelial cells	1	#36B366				
+59	59	#50B3AB	Transitional Principal-Intercalated Cell	tPC-IC	41	#86AFB3	tPC-IC	38	#86AFB3	IC	10	#39807A	epithelial cells	1	#36B366				
+60	60	#26807D	Intercalated Cell Type B	IC-B	42	#4D7880	IC-B	39	#4D7880	IC	10	#39807A	epithelial cells	1	#36B366				
+61	61	#ACE4E6	Papillary Tip Epithelial Cell	PapE	43	#67C8E6	PapE	40	#67C8E6	PapE	11	#67C8E6	epithelial cells	1	#36B366				
+62	62	#6BADB3	Glomerular Capillary Endothelial Cell	EC-GC	44	#368CB3	EC-GC	41	#368CB3	EC	12	#368CB3	endothelial cells	2	#507EB3				
+63	63	#397780	Afferent / Efferent Arteriole Endothelial Cell	EC-AEA	45	#607380	EC-AEA	42	#607380	EC	12	#368CB3	endothelial cells	2	#507EB3				
+64	64	#45C9E6	Descending Vasa Recta Endothelial Cell	EC-DVR	46	#8ABBE6	EC-DVR	43	#8ABBE6	EC	12	#368CB3	endothelial cells	2	#507EB3				
+65	65	#86A8B3	Peritubular Capilary Endothelial Cell	EC-PTC	47	#507EB3	EC-PTC	44	#507EB3	EC	12	#368CB3	endothelial cells	2	#507EB3				
+66	66	#4D7180	Degenerative Peritubular Capilary Endothelial Cell	dEC-PTC	48	#264980	dEC-PTC	45	#264980	EC	12	#368CB3	endothelial cells	2	#507EB3				
+67	67	#67BCE6	Ascending Vasa Recta Endothelial Cell	EC-AVR	49	#ACBEE6	EC-AVR	46	#ACBEE6	EC	12	#368CB3	endothelial cells	2	#507EB3				
+68	68	#3683B3	Degenerative Endothelial Cell	dEC	50	#6B7CB3	dEC	47	#6B7CB3	EC	12	#368CB3	endothelial cells	2	#507EB3				
+69	69	#607280	Cycling Endothelial Cell	cycEC	51	#394480	cycEC	48	#394480	EC	12	#368CB3	endothelial cells	2	#507EB3				
+70	70	#8ABAE6	Lymphatic Endothelial Cell	EC-LYM	52	#4551E6	EC-LYM	49	#4551E6	EC	12	#368CB3	endothelial cells	2	#507EB3				
+71	71	#507FB3	Mesangial Cell	MC	53	#8686B3	MC	50	#8686B3	VSM/P	13	#8686B3	stroma cells	3	#9D6BB3				
+72	72	#264C80	Renin-positive Juxtaglomerular Granular Cell	REN	54	#504D80	REN	51	#504D80	VSM/P	13	#8686B3	stroma cells	3	#9D6BB3				
+73	73	#ACC1E6	Vascular Smooth Muscle Cell	VSMC	55	#7B67E6	VSMC	52	#7B67E6	VSM/P	13	#8686B3	stroma cells	3	#9D6BB3				
+74	74	#6B82B3	Vascular Smooth Muscle Cell / Pericyte	VSMC/P	56	#5236B3	VSMC/P	53	#5236B3	VSM/P	13	#8686B3	stroma cells	3	#9D6BB3				
+75	75	#394C80	Degenerative Vascular Smooth Muscle Cell	dVSMC	57	#696080	dVSMC	54	#696080	VSM/P	13	#8686B3	stroma cells	3	#9D6BB3				
+76	76	#4568E6	Myofibroblast	MYOF	58	#AD8AE6	MYOF	55	#AD8AE6	FIB	14	#AD8AE6	stroma cells	3	#9D6BB3				
+77	77	#868DB3	Myofibroblast	MYOF	58	#AD8AE6	MYOF	55	#AD8AE6	FIB	14	#AD8AE6	stroma cells	3	#9D6BB3				
+78	78	#4D5380	Myofibroblast	MYOF	58	#AD8AE6	MYOF	55	#AD8AE6	FIB	14	#AD8AE6	stroma cells	3	#9D6BB3				
+79	79	#6770E6	Cycling Myofibroblast	cycMYOF	59	#7E50B3	cycMYOF	56	#7E50B3	FIB	14	#AD8AE6	stroma cells	3	#9D6BB3				
+80	80	#3638B3	Fibroblast	FIB	60	#562680	FIB	57	#562680	FIB	14	#AD8AE6	stroma cells	3	#9D6BB3				
+81	81	#616080	Fibroblast	FIB	60	#562680	FIB	57	#562680	FIB	14	#AD8AE6	stroma cells	3	#9D6BB3				
+82	82	#918AE6	Medullary Fibroblast	M-FIB	61	#CFACE6	M-FIB	58	#CFACE6	FIB	14	#AD8AE6	stroma cells	3	#9D6BB3				
+83	83	#5E50B3	Degenerative Medullary Fibroblast	dM-FIB	62	#9D6BB3	dM-FIB	59	#9D6BB3	FIB	14	#AD8AE6	stroma cells	3	#9D6BB3				
+84	84	#372680	Medullary Fibroblast	M-FIB	61	#CFACE6	M-FIB	58	#CFACE6	FIB	14	#AD8AE6	stroma cells	3	#9D6BB3				
+85	85	#BAACE6	Medullary Fibroblast	M-FIB	61	#CFACE6	M-FIB	58	#CFACE6	FIB	14	#AD8AE6	stroma cells	3	#9D6BB3				
+86	86	#7F6BB3	Adaptive / Maladaptive / Repairing  Fibroblast	aFIB	63	#6F3980	aFIB	60	#6F3980	FIB	14	#AD8AE6	stroma cells	3	#9D6BB3				
+87	87	#513980	Degenerative Fibroblast	dFIB	64	#CD45E6	dFIB	61	#CD45E6	FIB	14	#AD8AE6	stroma cells	3	#9D6BB3				
+88	88	#8345E6	B Cell	B	65	#AF86B3	B	62	#AF86B3	IMM	15	#E68AC9	immune cells	4	#E68AC9				
+89	89	#9986B3	Plasma Cell	PL	66	#804D80	PL	63	#804D80	IMM	15	#E68AC9	immune cells	4	#E68AC9				
+90	90	#654D80	T Cell	T	67	#E667DC	T	64	#E667DC	IMM	15	#E68AC9	immune cells	4	#E68AC9				
+91	91	#AB67E6	Natural Killer T Cell	NKT	68	#B3369F	NKT	65	#B3369F	IMM	15	#E68AC9	immune cells	4	#E68AC9				
+92	92	#7F36B3	Mast Cell	MAST	69	#806078	MAST	66	#806078	IMM	15	#E68AC9	immune cells	4	#E68AC9				
+93	93	#746080	M2 Macrophage	MAC-M2	70	#E68AC9	MAC-M2	67	#E68AC9	IMM	15	#E68AC9	immune cells	4	#E68AC9				
+94	94	#C98AE6	Cycling Mononuclear Phagocyte	cycMNP	71	#B3508D	cycMNP	68	#B3508D	IMM	15	#E68AC9	immune cells	4	#E68AC9				
+95	95	#9950B3	Monocyte-derived Cell	MDC	72	#802656	MDC	69	#802656	IMM	15	#E68AC9	immune cells	4	#E68AC9				
+96	96	#6D2680	Classical Dendritic Cell	cDC	73	#E6ACC7	cDC	70	#E6ACC7	IMM	15	#E68AC9	immune cells	4	#E68AC9				
+97	97	#DCACE6	Plasmacytoid Dendritic Cell	pDC	74	#B36B87	pDC	71	#B36B87	IMM	15	#E68AC9	immune cells	4	#E68AC9				
+98	98	#AB6BB3	Non-Classical Monocyte	ncMON	75	#80394F	ncMON	72	#80394F	IMM	15	#E68AC9	immune cells	4	#E68AC9				
+99	99	#7B3980	Neutrophil	N	76	#E6456A	N	73	#E6456A	IMM	15	#E68AC9	immune cells	4	#E68AC9				
+100	100	#E445E6	Schwann Cell / Neural	SC/NEU	77	#B3868D	SC/NEU	74	#B3868D	NEU	16	#B3868D	neural cells	5	#B3868D				
