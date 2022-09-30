@@ -195,6 +195,7 @@ DefaultAssay(Knep.sc) <- "RNA"
 Idents(Knep.sc)
 order <- c(10,4,5,13,12,8,0:3,6,9,7,11)
 Idents(Knep.sc) <- factor(Idents(Knep.sc), levels = order)
+Knep.sc <- FindVariableFeatures(Knep.sc)
 Knep.sc <- ScaleData(Knep.sc)
 DefaultAssay(Knep.sc) <- "integrated"
 
@@ -210,11 +211,11 @@ common.mouse.genes <- mouse.var[which(toupper(mouse.var) %in% common.human.genes
 #Use only reference clusters
 ave.KBR <- AverageExpression(KBR.sub, features = common.human.genes, slot = "scale.data")
 dim(ave.KBR$RNA)
-ave.KBR$RNA <- ave.KBR$RNA[,c("40","41","44","45")]
 
 ave.Kn <- AverageExpression(Knep.sc, features = common.mouse.genes, slot = "scale.data")
 rownames(ave.Kn$integrated) <- toupper(rownames(ave.Kn$integrated))
 ave.Kn$integrated <- ave.Kn$integrated[common.human.genes,c("0","1","2","3","6","9")]
+ave.KBR$RNA <- ave.KBR$RNA[rownames(ave.Kn$integrated),c("40","41","44","45")]
 
 ave.cor<-cor(cbind(ave.KBR$RNA,ave.Kn$integrated))
 ave.cor<-ave.cor[1:4,5:10]
