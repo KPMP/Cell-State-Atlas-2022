@@ -136,7 +136,7 @@ DotPlot(KBR.sub, features = unique(c(epi.markers,int.markers)),cols = c("lightgr
 
 
 ###Comparison with reference data sets
-###Ransick et al. data (Ex Data Fig 2f) (https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE129798)
+###Ransick et al. data (Ex Data Fig 2h) (https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE129798)
 mcm.meta <- readRDS("/media/Scratch_SSD_Voyager/Blue/KPMP_10X/KPMP_Ref_analysis_12-2020/McMahon_Mouse_2019/pmeta.rds")
 mcm.data <- readRDS("/media/Scratch_SSD_Voyager/Blue/KPMP_10X/KPMP_Ref_analysis_12-2020/McMahon_Mouse_2019/expr_data.rds")
 mcm.genes <- readRDS("/media/Scratch_SSD_Voyager/Blue/KPMP_10X/KPMP_Ref_analysis_12-2020/McMahon_Mouse_2019/gene_tbl.rds")
@@ -155,7 +155,7 @@ all.genes <- rownames(mcm)
 mcm <- ScaleData(mcm, features = all.genes)
 
 #Use only reference clusters
-Idents(KBR) <- "state"
+Idents(KBR) <- "state.l2"
 KBR.sub <- subset(KBR, idents = "reference")
 Idents(KBR.sub) <- "clusters"
 Idents(object = KBR.sub) <- factor(Idents(object = KBR.sub), levels = 1:119)
@@ -183,7 +183,8 @@ corrplot(ave.cor, col = col2(500),  method="color",order = "original", cl.lim=c(
 
 
 
-###Chen et al. scRNA-seq Data (Ex Data Fig 2c) (https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE150338)
+###Chen et al. scRNA-seq Data (Ex Data Fig 2f) (https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE150338)
+KBR <- LoadH5Seurat("Kidney_Healthy-Injury_Cell_Atlas_snCv3_Seurat_03282022.h5Seurat")
 Idents(object = KBR) <- "clusters"
 Idents(object = KBR) <- factor(Idents(object = KBR), levels = 1:119)
 KBR.sub <- subset(KBR, idents = 1:100)
@@ -223,7 +224,7 @@ corrplot(ave.cor, col = col2(500),  method="color",order = "original", cl.lim=c(
 
 
 
-###Chen et al. Bulk Segment Data (Ex Data Fig 2d) (https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE150338)
+###Chen et al. Bulk Segment Data (Ex Data Fig 2e) (https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE150338)
 bulk <- read.delim("GSE150338_Mouse_TPM_Replicates.txt",sep="\t",header=TRUE, row.names = 1)
 bulk <- bulk[!duplicated(bulk$Gene_symbol),]
 rownames(bulk) <- bulk$Gene_symbol
@@ -260,7 +261,7 @@ corrplot(ave.cor, col = col2(500),  method="color",order = "original", cl.lim=c(
 
 
 
-###Kirita et al. data (Ext Data Fig 2e) (https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE139107)
+###Kirita et al. data (Ext Data Fig 2g) (https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE139107)
 meta <- read.table("GSE139107_MouseIRI.metadata.txt",sep="\t",header=TRUE,row.names=1)
 H1 <- read.table("GSE139107_MouseIRI_control.dge.txt",sep="\t",header=TRUE,row.names=1)
 H2 <- read.table("GSE139107_MouseIRI_4hours.dge.txt",sep="\t",header=TRUE,row.names=1)
@@ -339,7 +340,7 @@ corrplot(ave.cor, col = col2(500),  method="color",order = "original",cl.lim=c(-
 
 
 
-###Kuppe et al. (Ext Data Fig 2g) (https://zenodo.org/record/4059315#.YApbyehKiHs)
+###Kuppe et al. (Ext Data Fig 2i) (https://zenodo.org/record/4059315#.YApbyehKiHs)
 Idents(object = KBR) <- "clusters"
 Idents(object = KBR) <- factor(Idents(object = KBR), levels = 1:119)
 KBR.sub <- subset(KBR, idents = 1:100)
@@ -437,7 +438,7 @@ corrplot(ave.cor, col = col2(500),  method="color",order = "original",cl.lim=c(-
 
 
 
-###Immune cell types (Ext Data Fig 2h-i)
+###Immune cell types (Ext Data Fig 2j-k)
 
 #Prepare immune reference data
 library(celldex)
@@ -464,7 +465,7 @@ Idents(KBR.imm) <- factor(Idents(KBR.imm), levels = c(88:99))
 
 
 
-##Compare with human sorted immune populations (PBMC) (Ext Data Fig 2i)
+##Compare with human sorted immune populations (PBMC) (Ext Data Fig 2k)
 logcounts <- assays(ref.se)$logcounts
 MID <- CreateSeuratObject(counts = logcounts, min.cells = 0, min.features = 0)
 MID@meta.data$label.main <- colData(ref.se)$label.main
@@ -521,7 +522,7 @@ corrplot(ave.cor, col = col2(500),  method="color",order = "original", cl.lim=c(
 
 
 
-##Compare with mouse immune populations (Ext Data Fig 2h)
+##Compare with mouse immune populations (Ext Data Fig 2j)
 library(celldex)
 library(SingleR)
 
