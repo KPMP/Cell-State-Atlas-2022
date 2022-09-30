@@ -322,6 +322,9 @@ common.human <- intersect(VariableFeatures(KBR.sub)[1:3000], rownames(hki))
 common.genes <- unique(c(common.mouse, common.human))
 
 #Correlate at the cluster level
+Idents(object = KBR) <- "clusters"
+Idents(object = KBR) <- factor(Idents(object = KBR), levels = 1:119)
+KBR.sub <- subset(KBR, idents = 1:100)
 Idents(object = KBR.sub) <- "clusters"
 Idents(object = KBR.sub) <- factor(Idents(object = KBR.sub), levels = 1:100)
 
@@ -487,25 +490,6 @@ MID <- SetAssayData(
 all.genes <- rownames(MID)
 MID <- ScaleData(MID, features = all.genes)
 
-#Identify and remove poorly aligned subtypes using fine labels
-Idents(MID) <- "label.fine"
-all.genes <- rownames(MID)
-
-#Use Immune Genes (https://www.immport.org/shared/genelists)
-immune.genes <- read.delim("GeneList.txt")
-common.genes <- intersect(intersect(rownames(KBR.imm), immune.genes$Symbol),rownames(MID))
-
-#Use only reference clusters
-ave.KBR<-AverageExpression(KBR.imm, features = common.genes, slot = "scale.data")
-ave.MID<-AverageExpression(MID, features = common.genes, slot = "scale.data")
-
-ave.cor<-cor(cbind(ave.KBR$RNA,ave.MID$RNA))
-ave.cor<-ave.cor[1:12,13:41]
-ave.cor<-ave.cor[,colSums(ave.cor) > 0.2]
-
-#Remove cell types with poor correlation
-MID <- subset(MID, idents = colnames(ave.cor))
-
 Idents(MID) <- "label.main"
 order <- c("B cells","CD4+ T cells","CD8+ T cells","T cells","NK cells",             
            "Monocytes","Dendritic cells","Neutrophils","Progenitors","Basophils")
@@ -555,24 +539,6 @@ IGD <- ScaleData(IGD, features = all.genes)
 
 IGD <- subset(IGD, idents = c("B cells","B cells, pro","T cells","NKT","NK cells","Mast cells",
                               "Macrophages","Monocytes","DC","Neutrophils"))
-
-#Identify and remove poorly aligned subtypes using fine labels
-Idents(IGD) <- "label.fine"
-all.genes <- rownames(IGD)
-
-#Use Immune Genes (https://www.immport.org/shared/genelists)
-immune.genes <- read.delim("GeneList.txt")
-common.genes <- intersect(intersect(rownames(KBR.imm), immune.genes$Symbol),rownames(IGD))
-
-ave.KBR<-AverageExpression(KBR.imm, features = common.genes, slot = "scale.data")
-ave.IGD<-AverageExpression(IGD, features = common.genes, slot = "scale.data")
-
-ave.cor<-cor(cbind(ave.KBR$RNA,ave.IGD$RNA))
-ave.cor<-ave.cor[1:12,13:191]
-ave.cor<-ave.cor[,colSums(ave.cor) > 0.2]
-
-#Remove cell types with poor correlation
-IGD <- subset(IGD, idents = colnames(ave.cor))
 
 Idents(IGD) <- "label.main"
 order <- c("B cells","B cells, pro","T cells","NKT","NK cells","Mast cells",
