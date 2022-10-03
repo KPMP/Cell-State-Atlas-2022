@@ -1,4 +1,4 @@
-# SNARE2 - GWAS and eQTL Analyses (Fig. 6f, ED Fig 14c-d) ---------------------------------------------------------
+# SNARE2 - GWAS and eQTL Analyses (ED Fig 12c-e) ---------------------------------------------------------
 
 library(chromVAR)
 library(gchromVAR)
@@ -126,7 +126,7 @@ gdev.mat <- apply(abind::abind(wDEV_list, along = 3), c(1,2), function(x) {
   mean(x)
 })
 
-## Visualize results (Fig. 6f)
+## Visualize results (ED Fig. 12c)
 gdev.mat <- t(gdev.mat)
 gdev.mat[is.nan(gdev.mat)] <- 0
 gdev.mat <- gdev.mat[,apply(gdev.mat, 2, function(x) any(x != 0))]
@@ -233,7 +233,7 @@ MotifPlot(
   assay = 'ATAC'
 )
 
-##Plot TFBS Activities and RNA expression for ESRRB (Fig. 6f)
+##Plot TFBS Activities and RNA expression for ESRRB (ED Fig. 12c)
 DefaultAssay(KSAC) <- "chromvar"
 KSAC.male <- subset(KSAC, cells = rownames(KSAC@meta.data[KSAC@meta.data$sex == "M",]))
 KSAC.female <- subset(KSAC, cells = rownames(KSAC@meta.data[KSAC@meta.data$sex == "F",]))
@@ -254,7 +254,7 @@ DotPlot(KSAC.female, features = c("ESRRB"),
 
 
 
-###TF Network for TAL (ED Fig. 14d)
+###TF Network for TAL (ED Fig. 12d)
 #Load Cicero connections from "SNARE RNA/AC - Combined Seurat object"
 conns.sub <- FilterConns(conns, min.coaccess = 0.1)
 conns.sub$Peak1 <- sub("-",":",conns.sub$Peak1)
@@ -359,7 +359,7 @@ PlotNetwork(ESRRB.network.df, plot.title = "ESRRB Subnetwork", label = T)
 
 
 
-###eQTL Enrichment Analyses (ED Fig 14c)
+###eQTL Enrichment Analyses (ED Fig 12e)
 #Load Functions
 source("util.func.R") #Trajectory/util.func.R
 getEnrichScores <- function(celltype, subclass.l3.markers.sn, subclass.l3.markers.sc, gene.set) {
