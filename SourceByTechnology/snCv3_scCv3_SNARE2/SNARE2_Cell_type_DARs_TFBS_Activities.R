@@ -1,4 +1,4 @@
-# SNARE2 - Cell type DARs and TFBS Activities (ED Fig 4) -----------------------
+# SNARE2 - Cell type DARs and TFBS Activities (Zenodo Figure 1) -----------------------
 
 library(Signac)
 library(Seurat)
@@ -17,7 +17,7 @@ load("color_factors.robj")
 
 
 
-###Coverage Plots - ref-only clusters (ED Fig 4a)
+###Coverage Plots - ref-only clusters (Zenodo Fig 1a)
 DefaultAssay(KSAC) <- "ATAC"
 Idents(KSAC) <- "subclass.l2"
 Idents(KSAC) <- factor(Idents(KSAC), levels = c(
@@ -78,7 +78,7 @@ CombineTracks(
 
 
 
-###subclass.l2 DEG-linked DARs (ED Fig 4b)
+###subclass.l2 DEG-linked DARs (Zenodo Fig 1b)
 DefaultAssay(KSAC) <- "ATAC"
 Idents(object = KSAC) <- "subclass.l2"
 
@@ -266,7 +266,7 @@ MotifPlot(
 
 
 
-###TFBS activities for expressed TFs (ED Fig 4c)
+###TFBS activities for expressed TFs (Zenodo Fig 1c)
 DefaultAssay(KSAC) <- 'chromvar'
 tf.markers <- FindAllMarkers(
   object = KSAC,
