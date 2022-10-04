@@ -1,4 +1,4 @@
-# snCv3/scCv3/SNARE - Expression/Regulation Dotplots (Fig 2h, Fig 5c, Fig 6c&g, ED Fig 11d, ED Fig 14e) ----------------------
+# snCv3/scCv3/SNARE - Expression/Regulation Dotplots  ----------------------
 library(Signac)
 library(Seurat)
 library(SeuratDisk)
@@ -45,7 +45,7 @@ refquery$subclass.l3 <- Idents(refquery)
 
 
 
-###Renal corpuscle dotplot (Fig. 2h)
+###Renal corpuscle dotplot (Fig. 2f)
 RQ.GLOM <- subset(refquery, idents = c(
   "POD","PEC","PT-S1/2","MC","EC-GC","EC-AEA","MD","REN","VSMC"))
 Idents(RQ.GLOM) <- factor(Idents(RQ.GLOM), levels = c(
@@ -56,7 +56,7 @@ DotPlot(RQ.GLOM, features = c("NPHS2","EMCN","POSTN","VCAM1","SLC5A12","PALMD","
 rm(RQ.GLOM)
 
 
-###aSTR dotplot (ED Fig 8f)
+###aSTR dotplot (ED Fig 7d)
 RQ.Str <- subset(refquery, idents = c("FIB","dFIB","aFIB","MYOF","cycMYOF"))
 Idents(RQ.Str) <- factor(Idents(RQ.Str), levels = c("FIB","dFIB","aFIB","MYOF","cycMYOF"))
 ref.st.markers <- c("NEGR1","C7","FBLN5","LAMA2","MEG3","DCN",                                 
@@ -75,7 +75,7 @@ rm(RQ.Str)
 
 
 
-###Aging/SASP Gene set scores (Fig. 6g) 
+###Aging/SASP Gene set scores (ED Fig. 12f) 
 #Prepare objects for score calculation
 ref <- KBR
 query <- sc.KBR
@@ -183,7 +183,7 @@ refquery@meta.data$Takemon.score <- c(ref@meta.data$Takemon.score,query@meta.dat
 refquery@meta.data$Ruscetti.score <- c(ref@meta.data$Ruscetti.score,query@meta.data$Ruscetti.score)
 refquery@meta.data$Basisty.score <- c(ref@meta.data$Basisty.score,query@meta.data$Basisty.score)
 
-##Score Plots (ED Fig 14e)
+##Score Plots (ED Fig 12g)
 Idents(refquery) <- "subclass.l3"
 Idents(refquery) <- factor(Idents(refquery), levels = order)
 VlnPlot(refquery, features = c("tabula.muris.score","Takemon.score","Ruscetti.score","Basisty.score"), 
@@ -194,7 +194,7 @@ VlnPlot(refquery, features = c("tabula.muris.score","Takemon.score","Ruscetti.sc
 
 
 
-###TFBS activities for aPT states (Supplementary Table 20, ED Fig 11d)
+###TFBS activities for aPT states (Supplementary Table 20, ED Fig 9d)
 mod.assign <- readRDS("pt.snare.module.assignment.rds")
 KSAC@meta.data$module <- mod.assign[rownames(KSAC@meta.data)]
 
@@ -411,7 +411,7 @@ DotPlot(RQ.TAL, features = c("SLC12A1","EGF","IGF1R","NECTIN2","NRG1","NRG3","BM
 
 
 
-###Aging and SASP expresssion (Fig. 6g)
+###Aging and SASP expresssion (ED Fig 12f)
 #PT Modules
 sn.pt.mod <- readRDS("pt.sn.module.assignment.rds")
 sc.pt.mod <- readRDS("pt.sc.module.assignment.rds")
@@ -451,7 +451,7 @@ VlnPlot(RQ.aEpi, features = c("tabula.muris.score","Takemon.score","Ruscetti.sco
 
 
 
-###Stress TF Activities (Fig. 6g)
+###Stress TF Activities (ED Fig 12f)
 #PT Modules
 pt.mod <- readRDS("pt.snare.module.assignment.rds")
 cells <- names(pt.mod)
