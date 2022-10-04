@@ -1,4 +1,4 @@
-# snCv3/scCv3/SNARE - Altered State Signatures (ED Fig 8) -------------------------------------------------------------
+# snCv3/scCv3/SNARE - Altered State Signatures (ED Fig 7) -------------------------------------------------------------
 library(Seurat)
 library(SeuratDisk)
 library(dplyr)
@@ -31,7 +31,7 @@ Idents(refquery) <- "subclass.l3"
 
 
 ###Plot Figures
-###snCv3 - Degenerative State Features (Ext Data Fig 8a)
+###snCv3 - Degenerative State Features (Zenodo Fig 2)
 KBR.sub <- subset(KBR, idents = 1:100)
 Idents(object = KBR.sub) <- "state.l2"
 KBR.sub.inj <- subset(KBR.sub, idents = c("reference","degenerative"))
@@ -53,7 +53,7 @@ VlnPlot(object = KBR.sub.inj, features = c("IGFBP7","CLU","CST3","degen.score","
 
 
 
-###Matrisome Score Plots (Ext Data Fig 8g)
+###Matrisome Score Plots (Ext Data Fig 7e)
 #core matrisome score
 matrisome_set = read.table("https://raw.githubusercontent.com/mahmoudibrahim/KidneyMap/master/assets/public/ecm_genes_human.txt", sep = "\t", header = TRUE)
 matrisome = matrisome_set$Gene.Symbol[which(matrisome_set$Division %in% c("Core matrisome"))]
@@ -114,7 +114,7 @@ VlnPlot(KBR.sub, features = c("aStr.score", "matrisome.score"),
 
 
 
-###aEPI Marker Expression (clusters) (ED Fig 8e)
+###aEPI Marker Expression (clusters) (ED Fig 7c)
 
 KBR.aEpi <- subset(KBR, idents = c(4:11,26:31,36:37))
 
@@ -139,7 +139,7 @@ DotPlot(KBR.aEpi, features = mark,
 
 
 
-###snCv3/scCv3 Stromal Expression plot (Ext Data Fig 8f)
+###snCv3/scCv3 Stromal Expression plot (Ext Data Fig 7d)
 Idents(refquery) <- "subclass.l3"
 RQ.Str <- subset(refquery, idents = c("FIB","dFIB","aFIB","MYOF","cycMYOF"))
 Idents(RQ.Str) <- factor(Idents(RQ.Str), levels = c("FIB","dFIB","aFIB","MYOF","cycMYOF"))
@@ -158,7 +158,7 @@ DotPlot(RQ.Str, features = ref.st.markers,
 
 
 
-###SNARE2 RNA/AC - Degen State TFBS Activities (ED Fig 8b)
+###SNARE2 RNA/AC - Degen State TFBS Activities (Zenodo Figure 2)
 library(Signac)
 library(Seurat)
 library(dplyr)
