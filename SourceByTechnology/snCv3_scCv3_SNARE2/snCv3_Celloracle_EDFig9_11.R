@@ -1,4 +1,4 @@
-# snCv3 - Celloracle (ED Fig 11j-m, ED Fig 13g) ------------------------------------------
+# snCv3 - Celloracle (ED Fig 9j-m, ED Fig 11h) ------------------------------------------
 library(Signac)
 library(Seurat)
 library(GenomicRanges)
