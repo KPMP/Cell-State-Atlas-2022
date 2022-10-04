@@ -1,4 +1,4 @@
-# snCv3 - RNA Velocity (Fig 5a, ED Fig 11b,g-i) ------------------------------------------------------------
+# snCv3 - RNA Velocity (Fig 5a, ED Fig 9b,g-i) ------------------------------------------------------------
 
 ###In Python
 ##Generate loom files from Cellranger outputs. For example:
